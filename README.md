@@ -16,12 +16,9 @@ The kit helps you implement those foundations and measure whether they help.
 [Audit example](#what-an-audit-looks-like) · [Installation](#install-the-skill) ·
 [Sources](#where-the-ideas-come-from)
 
-```mermaid
-flowchart LR
-    U["You explicitly invoke the skill"] --> K["Read the relevant guidance"]
-    K -->|Setup| S["Implement and verify"]
-    K -->|Audit| A["Inspect and report"]
-```
+![Manual invocation leads to relevant guidance, then setup implements and verifies or audit inspects and reports.](docs/diagrams/workflow.svg)
+
+[Editable diagram source](docs/diagrams/workflow.mmd)
 
 **Setup** makes applicable improvements using the project's existing tools.
 **Audit** leaves the project unchanged and returns evidence plus the highest
@@ -71,13 +68,9 @@ kit. Reuse an adequate existing solution; add only what the project needs.
 An agent fixing an order bug needs the order contract, a canonical implementation
 and a relevant check. Keep those discoverable through a short entrypoint.
 
-```mermaid
-flowchart LR
-    A["AGENTS.md"] --> B["Docs index"]
-    B --> C["Orders contract"]
-    B --> D["Canonical implementation"]
-    B --> E["Focused verification"]
-```
+![AGENTS.md leads to the docs index, which points to the orders contract, canonical implementation and focused verification.](docs/diagrams/context-map.svg)
+
+[Editable diagram source](docs/diagrams/context-map.mmd)
 
 An example excerpt from the target project's `AGENTS.md`:
 
@@ -120,15 +113,9 @@ Preview: stopped — start when needed
 For parallel tasks that change persistent state, isolation needs to cover the
 backend as well as the checkout:
 
-```mermaid
-flowchart TB
-    subgraph A["Task A"]
-        WA["Worktree A"] --> PA["Preview on port 8081"] --> DA[("Disposable state A")]
-    end
-    subgraph B["Task B"]
-        WB["Worktree B"] --> PB["Preview on port 8082"] --> DB[("Disposable state B")]
-    end
-```
+![Task A and Task B have separate worktrees, preview ports and disposable state when their work requires backend isolation.](docs/diagrams/task-isolation.svg)
+
+[Editable diagram source](docs/diagrams/task-isolation.mmd)
 
 Worktrees isolate source files. Separate preview ports alone do **not** isolate
 database rows, storage or queues. The diagram illustrates separate state where
@@ -291,10 +278,15 @@ Windows PowerShell example:
 python scripts/install.py --project 'C:/GITHUB PROJECTS/Your Project' --host codex
 ```
 
-| Host | Installer option | Installed location inside your project | Explicit invocation |
-| --- | --- | --- | --- |
-| Codex | `--host codex` | `.agents/skills/agentic-environment-setup/` | `$agentic-environment-setup setup this project` |
-| Claude Code | `--host claude` | `.claude/skills/agentic-environment-setup/` | `/agentic-environment-setup setup this project` |
+| Host | Installer option | Installed location inside your project |
+| --- | --- | --- |
+| Codex | `--host codex` | `.agents/skills/agentic-environment-setup/` |
+| Claude Code | `--host claude` | `.claude/skills/agentic-environment-setup/` |
+
+Invoke it in the target project:
+
+- **Codex:** `$agentic-environment-setup setup this project`
+- **Claude Code:** `/agentic-environment-setup setup this project`
 
 Replace `setup` with `audit` to inspect a project without changing it.
 
@@ -352,8 +344,12 @@ python scripts/check.py
 python -m unittest discover -s tests -v
 ```
 
+Diagrams are checked-in SVGs so they display without a live Mermaid renderer.
+Their editable Mermaid sources live beside them in `docs/diagrams/`; keep each
+source and SVG consistent when changing a diagram.
+
 The package checker validates local file links and the skill contract. It does
-not validate Mermaid rendering, fragment anchors or external websites.
+not validate diagram rendering, fragment anchors or external websites.
 
 See [AGENTS.md](AGENTS.md) for contribution guidance. Original kit content is
 [MIT licensed](LICENSE); publishers retain their rights to the linked articles.

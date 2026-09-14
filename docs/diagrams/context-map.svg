@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="316" viewBox="0 0 900 316" role="img" aria-labelledby="title desc">
+  <title id="title">A small project map leads to focused context</title>
+  <desc id="desc">AGENTS.md points to the docs index. The docs index points to the orders contract, a canonical implementation, and focused verification.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 1 1 L 9 5 L 1 9 Z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <rect width="900" height="316" rx="16" fill="#f8fafc"/>
+  <g fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)">
+    <path d="M 215 158 H 270"/>
+    <path d="M 464 158 H 523 V 66 H 582"/>
+    <path d="M 464 158 H 582"/>
+    <path d="M 464 158 H 523 V 250 H 582"/>
+  </g>
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+    <rect x="24" y="114" width="190" height="88" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <text x="119" y="165" fill="#172b42" font-size="21" font-weight="600" text-anchor="middle">AGENTS.md</text>
+    <rect x="273" y="114" width="190" height="88" rx="12" fill="#e6f4f1" stroke="#8bbeb4" stroke-width="1.5"/>
+    <text x="368" y="165" fill="#134e4a" font-size="21" font-weight="600" text-anchor="middle">Docs index</text>
+    <g fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5">
+      <rect x="585" y="24" width="291" height="84" rx="12"/>
+      <rect x="585" y="116" width="291" height="84" rx="12"/>
+      <rect x="585" y="208" width="291" height="84" rx="12"/>
+    </g>
+    <g fill="#172b42" font-size="20" font-weight="600" text-anchor="middle">
+      <text x="730.5" y="73">Orders contract</text>
+      <text x="730.5" y="151"><tspan x="730.5">Canonical</tspan><tspan x="730.5" dy="27">implementation</tspan></text>
+      <text x="730.5" y="257">Focused verification</text>
+    </g>
+  </g>
+</svg>

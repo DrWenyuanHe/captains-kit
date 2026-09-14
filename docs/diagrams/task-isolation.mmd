@@ -1,0 +1,8 @@
+%% Separate state when the task needs it.
+flowchart TB
+    subgraph A["Task A"]
+        WA["Worktree A"] --> PA["Preview on port 8081"] --> DA[("Disposable state A")]
+    end
+    subgraph B["Task B"]
+        WB["Worktree B"] --> PB["Preview on port 8082"] --> DB[("Disposable state B")]
+    end

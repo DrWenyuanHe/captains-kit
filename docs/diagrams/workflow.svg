@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="296" viewBox="0 0 900 296" role="img" aria-labelledby="title desc">
+  <title id="title">One manually invoked skill, two modes</title>
+  <desc id="desc">You explicitly invoke the skill, which reads the relevant guidance. Setup leads to implement and verify. Audit leads to inspect and report.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 1 1 L 9 5 L 1 9 Z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <rect width="900" height="296" rx="16" fill="#f8fafc"/>
+  <g fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)">
+    <path d="M 239 148 H 284"/>
+    <path d="M 516 148 H 572 V 70 H 629"/>
+    <path d="M 516 148 H 572 V 226 H 629"/>
+  </g>
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+    <rect x="24" y="102" width="214" height="92" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <text x="131" y="139" fill="#172b42" font-size="20" font-weight="600" text-anchor="middle">
+      <tspan x="131">You explicitly</tspan><tspan x="131" dy="27">invoke the skill</tspan>
+    </text>
+    <rect x="286" y="102" width="229" height="92" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <text x="400.5" y="139" fill="#172b42" font-size="20" font-weight="600" text-anchor="middle">
+      <tspan x="400.5">Read the</tspan><tspan x="400.5" dy="27">relevant guidance</tspan>
+    </text>
+    <text x="566" y="53" fill="#0f766e" font-size="14" font-weight="700" text-anchor="middle" letter-spacing="1">SETUP</text>
+    <rect x="632" y="26" width="244" height="88" rx="12" fill="#e6f4f1" stroke="#8bbeb4" stroke-width="1.5"/>
+    <text x="754" y="65" fill="#134e4a" font-size="20" font-weight="600" text-anchor="middle">
+      <tspan x="754">Implement</tspan><tspan x="754" dy="27">and verify</tspan>
+    </text>
+    <text x="566" y="252" fill="#245c91" font-size="14" font-weight="700" text-anchor="middle" letter-spacing="1">AUDIT</text>
+    <rect x="632" y="182" width="244" height="88" rx="12" fill="#edf4fc" stroke="#a4bfdc" stroke-width="1.5"/>
+    <text x="754" y="221" fill="#1e4267" font-size="20" font-weight="600" text-anchor="middle">
+      <tspan x="754">Inspect</tspan><tspan x="754" dy="27">and report</tspan>
+    </text>
+  </g>
+</svg>
