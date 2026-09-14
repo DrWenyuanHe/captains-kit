@@ -31,6 +31,13 @@ the amount of tooling or documentation is not a measure of success.
 4. Use the target's existing names, abstractions, scripts and policies. Examples
    in this kit are design contracts, not commands known to exist in that project.
 
+For setup involving configuration or worktrees, follow
+[environment propagation](references/environment-propagation.md): make the
+development profile reach the right consumers and verify their effective targets.
+Load [optional infrastructure](references/optional-infrastructure.md) only for
+applicable CI/GitHub Actions or Docker/Supabase work. These are optional extensions,
+not prerequisites for installing or using the skill.
+
 ## Apply judgment
 
 The user's instructions take precedence over this skill's guidelines. Setup

@@ -15,6 +15,8 @@ application details and operational configuration are intentionally absent.
 - **Environment copying has consequences.** Preserving files can preserve the
   wrong backend. Readiness needs to distinguish source/preview identity from
   the mutable service target. Blanket copying is a poor default for a general kit.
+  Prepare a dedicated development profile and verify each consumer's effective
+  target; a global agent-tool connection can remain pointed elsewhere.
 - **A dev server has an owner.** On-demand startup and a reported checkout-specific
   URL reduce accidental verification against another task's code. Shared-service
   lifecycle rules matter when multiple agents work concurrently.
@@ -28,6 +30,12 @@ application details and operational configuration are intentionally absent.
 - **Separate local implementation from readiness.** A passing focused test is
   useful evidence within its scope. It does not attest deployment, migration
   application, clean CI or successful delegation on representative tasks.
+- **CI has several evidence levels.** A workflow can exist before a hosted run
+  succeeds or required merge checks are enabled. Verify execution and enforcement
+  independently, including skipped-check behavior, before claiming a gate works.
+- **Faster feedback must retain its signal.** Measure comparable runs and confirm
+  optimized checks still detect representative defects. A faster test file does
+  not establish a full-suite improvement or a productivity gain.
 
 These lessons inform the kit's defaults. Revalidate them against each project's
 tools and constraints instead of copying the original implementation wholesale.

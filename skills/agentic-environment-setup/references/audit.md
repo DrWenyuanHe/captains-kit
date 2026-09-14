@@ -54,6 +54,14 @@ sampling limits: one passing route does not certify the entire application.
 
 For projects with persistent state, apply the
 [state-isolation checklist](state-isolation.md) under environment and verification.
+For environment-dependent projects, inspect the
+[propagation map](environment-propagation.md): configuration sources, override
+preservation and effective app/CLI/agent-tool targets. Check existing evidence
+of repeat setup and target-conflict handling without creating a new environment.
+Use [optional infrastructure guidance](optional-infrastructure.md) only where
+CI/GitHub Actions or Docker/Supabase fit the project. Report CI configuration,
+remote execution and merge enforcement separately; absence of an optional stack
+is not itself a defect.
 For a docs-only project, runtime previews and databases usually do not apply.
 For an empty project without a stack, evaluate its starting instructions and
 explicit next milestone; do not penalize nonexistent application architecture.

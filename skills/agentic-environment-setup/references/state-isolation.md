@@ -4,6 +4,10 @@ Read this only when setup or audit involves a database, queue, storage system or
 another mutable service. These are practical implementation lessons, not a
 requirement that every project adopt local containers or a particular provider.
 
+Use [environment propagation](environment-propagation.md) to prepare and verify
+the selected profile. Load [optional infrastructure](optional-infrastructure.md)
+for applicable CI, container or Supabase implementation details.
+
 ## Identify the whole environment
 
 Map the application's configuration, database CLI, migrations, workers/functions,

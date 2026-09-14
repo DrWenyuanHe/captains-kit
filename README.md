@@ -13,6 +13,7 @@ interruptions, fewer repeated explanations and more correct delegated changes.
 The kit helps you implement those foundations and measure whether they help.
 
 [Quick start](#quick-start) · [Implementation examples](#key-implementations) ·
+[Optional infrastructure](#optional-infrastructure) ·
 [Audit example](#what-an-audit-looks-like) · [Installation](#install-the-skill) ·
 [Sources](#where-the-ideas-come-from)
 
@@ -90,11 +91,21 @@ when the task needs it, and update its documentation with the source changes.
 **Proof it works:** a fresh session finds the public entrypoint, contract,
 example and check without needing the original conversation.
 
-### 2. Repeatable setup with an identifiable environment
+### 2. Repeatable setup and environment propagation
 
 Give a fresh checkout a documented route to readiness. Setup should preserve
 chosen configuration on repeated runs; a diagnostic command should explain
 missing prerequisites without exposing secret values.
+
+Environment propagation is part of this setup: a versioned bootstrap recipe
+prepares an approved development profile in the active checkout, preserves
+explicit overrides and supplies each consumer with only the configuration it
+needs. The browser receives public configuration; server credentials stay with
+server processes. CLI and agent-tool connections need their own target checks.
+
+![A repeatable bootstrap prepares task configuration for the browser, server and CLI, while agent tools are checked independently against the intended development target.](docs/diagrams/environment-propagation.svg)
+
+[Editable diagram source](docs/diagrams/environment-propagation.mmd)
 
 Example commands and output a JavaScript project might provide:
 
@@ -106,7 +117,10 @@ $ npm run agent:doctor
 Checkout: codex/order-validation
 Runtime: supported
 Required configuration: present
+Profile: task-local development
 Backend: disposable-orders-test
+App / CLI targets: agree
+Agent database tool: not configured — database tool checks unavailable
 Preview: stopped — start when needed
 ```
 
@@ -122,10 +136,12 @@ database rows, storage or queues. The diagram illustrates separate state where
 the project supports it and the tasks need it.
 
 **Proof it works:** prepare a disposable checkout twice, confirm configuration
-survives, and identify the actual preview and backend targets. A stopped preview
-is fine for tasks that do not need one.
+survives, and identify the actual preview and backend targets. A conflicting
+test profile must block writable checks. A stopped preview is fine for tasks
+that do not need one.
 
-See the conditional [state-isolation checklist](skills/agentic-environment-setup/references/state-isolation.md).
+Follow the [environment-propagation procedure](skills/agentic-environment-setup/references/environment-propagation.md)
+and, for mutable services, the [state-isolation checklist](skills/agentic-environment-setup/references/state-isolation.md).
 
 ### 3. Code boundaries with errors that explain the repair
 
@@ -226,6 +242,68 @@ and [evaluation guidance](skills/agentic-environment-setup/references/evaluate.m
 The full [setup playbook](skills/agentic-environment-setup/references/setup.md)
 covers implementation and verification for all six foundations.
 
+## Optional infrastructure
+
+These extensions help projects that need them. A small library or documentation
+repository can use the core skill without Docker, Supabase or hosted CI.
+The [optional playbook](skills/agentic-environment-setup/references/optional-infrastructure.md)
+provides implementation steps and acceptance checks.
+
+### CI / GitHub Actions
+
+Use CI to give each proposed change repeatable evidence. Start with the project's
+existing verification commands, keep required checks reliable, and avoid paying
+for duplicate dependency installs or builds when one job or a verified artifact
+can serve the same purpose.
+
+An illustrative workflow:
+
+```text
+Pull request revision
+  -> install locked dependencies
+  -> focused structural checks + required tests
+  -> build once, if applicable
+  -> publish result for this revision
+  -> required merge check, if configured and supported
+
+Backend-changing project: add a disposable database verification job when needed.
+```
+
+**Proof it works:** introduce a harmless failing check in a test PR, observe the
+remote failure, then verify merge enforcement separately. A workflow file alone
+does not establish either. Keep permissions and credentials scoped to the job.
+
+This kit's own [GitHub Actions workflow](.github/workflows/check.yml) is a small
+real example: it checks package links and skill policy, then runs installer and
+checker tests. Adapt the principle to your project's actual verification needs.
+
+### Docker and Supabase
+
+Use a disposable backend when agents need to exercise migrations, permissions,
+storage or other persistent behavior. Start it on demand and give the task an
+identifiable service instance, ports and state. Docker and Supabase are possible
+implementations; the general requirement is a reproducible development target.
+
+Example lifecycle for a stateful project:
+
+```text
+Prepare checkout -> create or resume owned development backend
+  -> activate task profile -> verify app / CLI / tool targets
+  -> seed synthetic users, permissions and sample files
+  -> exercise application + authorization checks
+  -> stop when paused; reset or destroy only the verified owned state
+```
+
+For migration work, test a fresh replay and an upgrade from the current base to
+the candidate revision. For permission-sensitive behavior, test both permitted
+and denied actions through the real client path. Record unavailable integrations
+as unverified. Review historical migrations and seeds before assuming a fresh
+database contains only synthetic data.
+
+**Proof it works:** two concurrent tasks cannot see or reset each other's test
+state, and each can reproduce its fixtures and verification results. A different
+preview URL is only one part of that evidence.
+
 ## What an audit looks like
 
 An audit reports what the evidence supports. This fictional example shows why
@@ -290,6 +368,23 @@ Invoke it in the target project:
 
 Replace `setup` with `audit` to inspect a project without changing it.
 
+### Complete the project setup
+
+The installed skill includes the
+[environment-propagation playbook](skills/agentic-environment-setup/references/environment-propagation.md).
+During the explicit setup invocation, the agent:
+
+1. Maps existing configuration sources, precedence and consumers.
+2. Extends the project's bootstrap to prepare its approved development profile
+   in new checkouts, preserving user-owned overrides.
+3. Connects a supported host setup action to the same bootstrap when useful,
+   and documents the manual fallback.
+4. Verifies repeat setup and actual app, CLI and agent-tool targets, reporting
+   unavailable surfaces and configuration conflicts.
+
+If the project has no environment-dependent configuration, this step is not
+applicable. CI and Docker/Supabase setup are selected only when relevant.
+
 The installer copies the complete skill. It does not execute project setup,
 install project dependencies or change global settings, and it refuses to
 overwrite an existing installation. Compare and update an installed copy
@@ -309,6 +404,8 @@ See [Codex skill documentation](https://learn.chatgpt.com/docs/build-skills) and
 | --- | --- |
 | [Skill entrypoint](skills/agentic-environment-setup/SKILL.md) | Select setup or audit and load relevant guidance. |
 | [Setup](skills/agentic-environment-setup/references/setup.md) and [audit](skills/agentic-environment-setup/references/audit.md) playbooks | Detailed procedures and evidence criteria. |
+| [Environment propagation](skills/agentic-environment-setup/references/environment-propagation.md) | Prepare development profiles, preserve overrides and verify consumer targets. |
+| [Optional infrastructure](skills/agentic-environment-setup/references/optional-infrastructure.md) | Conditional CI/GitHub Actions and Docker/Supabase guidance. |
 | [Templates](skills/agentic-environment-setup/assets/templates/README.md) | Adaptable project map, task record and audit report. |
 | [Source digests](skills/agentic-environment-setup/references/sources/README.md) | Five attributed Markdown backups of the core ideas. |
 | [Installer](scripts/install.py) | Copy the skill into a project for Codex or Claude Code. |

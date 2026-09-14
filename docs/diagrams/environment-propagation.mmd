@@ -1,0 +1,13 @@
+%% Propagate the intended development environment for each task checkout.
+%% Credentials stay out of output; primary environment files are not copied.
+flowchart TB
+    RECIPE["Tracked setup recipe<br/>Names, defaults and validation"] --> BOOT
+    SOURCE["Approved development config<br/>Local provisioner or scoped dev source"] --> BOOT
+    BOOT["Repeatable task bootstrap<br/>Allowlisted values · preserve chosen overrides"] --> PROFILE
+    PROFILE["Isolated task configuration<br/>Per-checkout profile + expected target"] --> BROWSER
+    PROFILE --> SERVER
+    PROFILE -. "compare identity" .-> TOOLS
+    BROWSER["Browser<br/>Public config only · no server secrets"] --> TARGET
+    SERVER["Server / CLI<br/>Scoped configuration · only required keys"] --> TARGET
+    TOOLS["Agent tools / MCP<br/>Separate target check · no automatic retargeting"] --> TARGET
+    TARGET["Same verified development target<br/>Services only · unresolved or mismatched: stop writable checks"]

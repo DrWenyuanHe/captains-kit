@@ -69,6 +69,12 @@ build a database search service merely to navigate a small repository.
 - Commit examples containing variable names and harmless defaults. Provision
   development credentials through the existing approved mechanism. Do not
   blanket-copy ignored files, production credentials, database dumps or state.
+- Apply [environment propagation](environment-propagation.md) when configuration
+  or worktrees are involved. Map each consumer and its configuration precedence;
+  extend the existing bootstrap to prepare a dedicated development profile,
+  preserve overrides and report conflicts. Verify app, CLI and agent-tool targets
+  independently. Installing this skill makes the guidance available; an explicit
+  setup invocation performs applicable project implementation.
 - For persistent-state work, read [state isolation](state-isolation.md). The
   browser, background workers, database CLI and agent tools must agree on the
   intended environment before state-changing checks run.
@@ -116,8 +122,10 @@ that developers and CI will use. Avoid architecture rewrites just to fit the kit
 - Run the smallest meaningful checks during iteration and the project's required
   checks before calling work ready. Preserve evidence of flakes and failures;
   do not weaken tests or gates to improve an agent's apparent success rate.
-- Add CI coverage for new critical checks using the repository's existing CI.
-  Do not claim a local pass proves remote CI passed.
+- Where the project uses CI, include new critical checks in its existing workflow.
+  CI/GitHub Actions are an [optional extension](optional-infrastructure.md), with
+  local verification still useful independently. Distinguish a local pass, a
+  passing remote run and an enforced merge rule.
 
 **Proof:** show the check fails for the relevant defect and passes after the fix
 when a behavior change warrants a regression test. For setup/docs changes,

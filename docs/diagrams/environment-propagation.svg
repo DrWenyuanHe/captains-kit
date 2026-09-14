@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="616" viewBox="0 0 900 616" role="img" aria-labelledby="title desc">
+  <title id="title">Propagate the intended development environment</title>
+  <desc id="desc">A tracked setup recipe and an approved development configuration source feed a repeatable bootstrap that allowlists values and preserves chosen overrides. The resulting isolated task profile supplies public browser configuration and scoped server or CLI configuration. Agent tools receive a separate target identity check, not automatic retargeting. Where services are used, all consumers must identify the same intended development target before writable checks. Credentials are never printed or copied from the primary environment.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 1 1 L 9 5 L 1 9 Z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <rect width="900" height="616" rx="16" fill="#f8fafc"/>
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+    <text x="28" y="38" fill="#172b42" font-size="20" font-weight="600">Propagate the intended development environment</text>
+    <text x="28" y="63" fill="#475569" font-size="14">Run this setup for each task checkout; verify every consumer's target.</text>
+
+    <g fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)">
+      <path d="M 229 156 V 172 H 350 V 186"/>
+      <path d="M 671 156 V 172 H 550 V 186"/>
+      <path d="M 450 256 V 279"/>
+      <path d="M 310 342 V 360 H 158 V 385"/>
+      <path d="M 450 342 V 385"/>
+      <path d="M 590 342 V 360 H 742 V 385" stroke-dasharray="5 4"/>
+      <path d="M 158 467 V 486 H 330 V 507"/>
+      <path d="M 450 467 V 507"/>
+      <path d="M 742 467 V 486 H 570 V 507"/>
+    </g>
+
+    <g fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5">
+      <rect x="24" y="86" width="410" height="70" rx="10"/>
+      <rect x="466" y="86" width="410" height="70" rx="10"/>
+    </g>
+    <rect x="208" y="189" width="484" height="67" rx="10" fill="#f0f8f6" stroke="#b6d8d0" stroke-width="1.5"/>
+    <rect x="240" y="282" width="420" height="60" rx="10" fill="#f0f5fb" stroke="#c1d2e6" stroke-width="1.5"/>
+
+    <g fill="#ffffff" stroke="#c1d2e6" stroke-width="1.5">
+      <rect x="24" y="388" width="268" height="79" rx="10"/>
+      <rect x="316" y="388" width="268" height="79" rx="10"/>
+      <rect x="608" y="388" width="268" height="79" rx="10"/>
+    </g>
+    <rect x="100" y="510" width="700" height="61" rx="10" fill="#f0f8f6" stroke="#b6d8d0" stroke-width="1.5"/>
+
+    <g fill="#172b42" font-size="17" font-weight="600" text-anchor="middle">
+      <text x="229" y="116">Tracked setup recipe</text>
+      <text x="671" y="116">Approved development config</text>
+      <text x="450" y="217">Repeatable task bootstrap</text>
+      <text x="450" y="307">Isolated task configuration</text>
+      <text x="158" y="413">Browser</text>
+      <text x="450" y="413">Server / CLI</text>
+      <text x="742" y="413">Agent tools / MCP</text>
+      <text x="450" y="535">Same verified development target</text>
+    </g>
+    <g fill="#475569" font-size="14" text-anchor="middle">
+      <text x="229" y="140">Names, defaults and validation</text>
+      <text x="671" y="140">Local provisioner or scoped dev source</text>
+      <text x="450" y="241">Allowlisted values · preserve chosen overrides</text>
+      <text x="450" y="329">Per-checkout profile + expected target</text>
+      <text x="158" y="435">Public config only</text>
+      <text x="158" y="455">No server secrets</text>
+      <text x="450" y="435">Scoped configuration</text>
+      <text x="450" y="455">Only required keys</text>
+      <text x="742" y="435">Separate target check</text>
+      <text x="742" y="455">No automatic retargeting</text>
+      <text x="450" y="557">Services only · unresolved or mismatched: stop writable checks</text>
+    </g>
+    <text x="717" y="379" fill="#475569" font-size="12" text-anchor="end">compare identity</text>
+    <text x="28" y="599" fill="#475569" font-size="14">Keep credentials out of output. Do not copy primary environment files into task checkouts.</text>
+  </g>
+</svg>
