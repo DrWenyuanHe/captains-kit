@@ -1,0 +1,6 @@
+interface:
+  display_name: "Agentic Environment Setup"
+  short_description: "Set up or audit projects for AI coding agents"
+  default_prompt: "Use $agentic-environment-setup to improve this project's foundations for reliable delegation to AI coding agents."
+policy:
+  allow_implicit_invocation: false
