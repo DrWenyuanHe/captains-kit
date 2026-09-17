@@ -1,0 +1,6 @@
+interface:
+  display_name: "Unslop"
+  short_description: "Remove AI writing patterns on explicit request"
+  default_prompt: "Use $unslop to edit the supplied text."
+policy:
+  allow_implicit_invocation: false

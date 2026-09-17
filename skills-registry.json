@@ -1,0 +1,281 @@
+{
+  "schema_version": 1,
+  "skills": {
+    "agentic-environment-setup": {
+      "added_at": "2026-09-15T15:53:27.237286Z",
+      "content_sha256": "f6d7a992053204f056c7ecdc8fe2fb229a49502cc01fa24bfd2001a48ba6091b",
+      "first_imported_at": null,
+      "history": [
+        {
+          "at": "2026-09-15T15:53:27.237286Z",
+          "content_sha256": "f6d7a992053204f056c7ecdc8fe2fb229a49502cc01fa24bfd2001a48ba6091b",
+          "event": "registered"
+        }
+      ],
+      "last_check": null,
+      "last_check_attempt_at": null,
+      "last_checked_at": null,
+      "last_updated_at": null,
+      "origin": "local",
+      "source": null
+    },
+    "docs-sync": {
+      "added_at": "2026-09-16T16:39:06.905915Z",
+      "content_sha256": "3724a628442247bcb0e351f505480192b4c712c8886f1af4b1848af04a0cc5af",
+      "first_imported_at": null,
+      "history": [
+        {
+          "at": "2026-09-16T16:39:06.905915Z",
+          "content_sha256": "3724a628442247bcb0e351f505480192b4c712c8886f1af4b1848af04a0cc5af",
+          "event": "registered"
+        }
+      ],
+      "last_check": null,
+      "last_check_attempt_at": null,
+      "last_checked_at": null,
+      "last_updated_at": null,
+      "origin": "local",
+      "source": null
+    },
+    "humanizer": {
+      "added_at": "2026-09-15T16:14:17.376431Z",
+      "content_sha256": "2c6eef7e775a7ae069e48f3ee3a92e12aed42d9fdbfdb5fd74ba17fa9ca0ea2f",
+      "first_imported_at": "2026-09-15T16:14:17.376431Z",
+      "history": [
+        {
+          "at": "2026-09-15T16:14:17.376431Z",
+          "content_sha256": "d1847953bd09cbac77e59f6ce13fdcc46af023ba125afeac466dbe5f28e24bda",
+          "event": "imported",
+          "source": {
+            "commit": "9862685f575c65a8247f90369951df1b3416e3d6",
+            "path": ".",
+            "ref": "main",
+            "repository": "https://github.com/blader/humanizer.git",
+            "sha256": "d1847953bd09cbac77e59f6ce13fdcc46af023ba125afeac466dbe5f28e24bda"
+          }
+        },
+        {
+          "at": "2026-09-15T16:17:17.527020Z",
+          "event": "checked",
+          "result": {
+            "commit": "9862685f575c65a8247f90369951df1b3416e3d6",
+            "sha256": "d1847953bd09cbac77e59f6ce13fdcc46af023ba125afeac466dbe5f28e24bda",
+            "status": "current"
+          }
+        },
+        {
+          "at": "2026-09-17T18:40:03.057098Z",
+          "event": "checked",
+          "result": {
+            "commit": "9862685f575c65a8247f90369951df1b3416e3d6",
+            "sha256": "2c6eef7e775a7ae069e48f3ee3a92e12aed42d9fdbfdb5fd74ba17fa9ca0ea2f",
+            "status": "update_available"
+          }
+        },
+        {
+          "at": "2026-09-17T18:40:30.399404Z",
+          "content_sha256": "2c6eef7e775a7ae069e48f3ee3a92e12aed42d9fdbfdb5fd74ba17fa9ca0ea2f",
+          "event": "updated",
+          "note": "Re-import the same upstream commit with stable LF archive bytes for portable checksums",
+          "source": {
+            "commit": "9862685f575c65a8247f90369951df1b3416e3d6",
+            "path": ".",
+            "ref": "main",
+            "repository": "https://github.com/blader/humanizer.git",
+            "sha256": "2c6eef7e775a7ae069e48f3ee3a92e12aed42d9fdbfdb5fd74ba17fa9ca0ea2f"
+          }
+        }
+      ],
+      "last_check": {
+        "commit": "9862685f575c65a8247f90369951df1b3416e3d6",
+        "sha256": "2c6eef7e775a7ae069e48f3ee3a92e12aed42d9fdbfdb5fd74ba17fa9ca0ea2f",
+        "status": "update_available"
+      },
+      "last_check_attempt_at": "2026-09-17T18:40:03.057098Z",
+      "last_checked_at": "2026-09-17T18:40:03.057098Z",
+      "last_updated_at": "2026-09-17T18:40:30.399404Z",
+      "origin": "imported",
+      "source": {
+        "commit": "9862685f575c65a8247f90369951df1b3416e3d6",
+        "path": ".",
+        "ref": "main",
+        "repository": "https://github.com/blader/humanizer.git",
+        "sha256": "2c6eef7e775a7ae069e48f3ee3a92e12aed42d9fdbfdb5fd74ba17fa9ca0ea2f"
+      }
+    },
+    "humanizer-zh": {
+      "added_at": "2026-09-17T18:35:59.063462Z",
+      "content_sha256": "17b01dd125f9620409ab13a6d521322893333b5b28a469a662b3879c77f8a639",
+      "first_imported_at": "2026-09-17T18:35:59.063462Z",
+      "history": [
+        {
+          "at": "2026-09-17T18:35:59.063462Z",
+          "content_sha256": "50a33b722eb3522b43d3ccafd4df91295915c22cf8427b09d2fb49e99d772abf",
+          "event": "imported",
+          "source": {
+            "commit": "91f3d394db8419c20d67ebe22a96cf8fee0a404b",
+            "path": ".",
+            "ref": "main",
+            "repository": "https://github.com/op7418/Humanizer-zh.git",
+            "sha256": "50a33b722eb3522b43d3ccafd4df91295915c22cf8427b09d2fb49e99d772abf"
+          }
+        },
+        {
+          "at": "2026-09-17T18:40:04.035043Z",
+          "event": "checked",
+          "result": {
+            "commit": "91f3d394db8419c20d67ebe22a96cf8fee0a404b",
+            "sha256": "17b01dd125f9620409ab13a6d521322893333b5b28a469a662b3879c77f8a639",
+            "status": "update_available"
+          }
+        },
+        {
+          "at": "2026-09-17T18:40:31.349762Z",
+          "content_sha256": "17b01dd125f9620409ab13a6d521322893333b5b28a469a662b3879c77f8a639",
+          "event": "updated",
+          "note": "Re-import the same upstream commit with stable LF archive bytes for portable checksums",
+          "source": {
+            "commit": "91f3d394db8419c20d67ebe22a96cf8fee0a404b",
+            "path": ".",
+            "ref": "main",
+            "repository": "https://github.com/op7418/Humanizer-zh.git",
+            "sha256": "17b01dd125f9620409ab13a6d521322893333b5b28a469a662b3879c77f8a639"
+          }
+        }
+      ],
+      "last_check": {
+        "commit": "91f3d394db8419c20d67ebe22a96cf8fee0a404b",
+        "sha256": "17b01dd125f9620409ab13a6d521322893333b5b28a469a662b3879c77f8a639",
+        "status": "update_available"
+      },
+      "last_check_attempt_at": "2026-09-17T18:40:04.035043Z",
+      "last_checked_at": "2026-09-17T18:40:04.035043Z",
+      "last_updated_at": "2026-09-17T18:40:31.349762Z",
+      "origin": "imported",
+      "source": {
+        "commit": "91f3d394db8419c20d67ebe22a96cf8fee0a404b",
+        "path": ".",
+        "ref": "main",
+        "repository": "https://github.com/op7418/Humanizer-zh.git",
+        "sha256": "17b01dd125f9620409ab13a6d521322893333b5b28a469a662b3879c77f8a639"
+      }
+    },
+    "review-changes": {
+      "added_at": "2026-09-16T16:21:25.413254Z",
+      "content_sha256": "7ba88d204c0131664615780b4adb8624794ce4a4d396302f8fa81516d2697d8e",
+      "first_imported_at": null,
+      "history": [
+        {
+          "at": "2026-09-16T16:21:25.413254Z",
+          "content_sha256": "5fcc113c823407b5035b33d73571c81c33c4dcfceb7b026515ec0eff2819d507",
+          "event": "registered"
+        },
+        {
+          "at": "2026-09-16T16:29:21.129660Z",
+          "content_sha256": "7ba88d204c0131664615780b4adb8624794ce4a4d396302f8fa81516d2697d8e",
+          "event": "edited",
+          "note": "Add gstack discovery links and append-only source-review history for occasional upstream revisits"
+        }
+      ],
+      "last_check": null,
+      "last_check_attempt_at": null,
+      "last_checked_at": null,
+      "last_updated_at": "2026-09-16T16:29:21.129660Z",
+      "origin": "local",
+      "source": null
+    },
+    "ship-changes": {
+      "added_at": "2026-09-16T16:21:26.763390Z",
+      "content_sha256": "b97d74a2c170a5bac07e4926786bc61cd426b2aeb3c8452f1892dc656096b186",
+      "first_imported_at": null,
+      "history": [
+        {
+          "at": "2026-09-16T16:21:26.763390Z",
+          "content_sha256": "e7aa1ee63ac046a732df8564cdb9669b5528e39431493c20aced87cae0217138",
+          "event": "registered"
+        },
+        {
+          "at": "2026-09-16T16:24:21.256871Z",
+          "content_sha256": "d297d490708883e5f6b7711cadcc5fd13caf8d72488eec550d1a2967f8aa7624",
+          "event": "edited",
+          "note": "Clarify that readiness-only assessments report defects and repairs follow existing authorization"
+        },
+        {
+          "at": "2026-09-16T16:29:22.583363Z",
+          "content_sha256": "b97d74a2c170a5bac07e4926786bc61cd426b2aeb3c8452f1892dc656096b186",
+          "event": "edited",
+          "note": "Add gstack discovery links and append-only source-review history for occasional upstream revisits"
+        }
+      ],
+      "last_check": null,
+      "last_check_attempt_at": null,
+      "last_checked_at": null,
+      "last_updated_at": "2026-09-16T16:29:22.583363Z",
+      "origin": "local",
+      "source": null
+    },
+    "unslop": {
+      "added_at": "2026-09-15T16:13:55.966624Z",
+      "content_sha256": "64b3e43663b2bcd9d601738652cb0480dc19c5fed7d84a704d2488a6c72ce5ad",
+      "first_imported_at": "2026-09-15T16:13:55.966624Z",
+      "history": [
+        {
+          "at": "2026-09-15T16:13:55.966624Z",
+          "content_sha256": "8a5cb2421045d92ef30e0b89ade767fbe8c43c0d9f2e81e6e0fe883e3613898f",
+          "event": "imported",
+          "source": {
+            "commit": "c1c0a32802223f4be824112dd83d33ad29a8b26c",
+            "path": "pstack/skills/unslop",
+            "ref": "main",
+            "repository": "https://github.com/cursor/plugins.git",
+            "sha256": "8a5cb2421045d92ef30e0b89ade767fbe8c43c0d9f2e81e6e0fe883e3613898f"
+          }
+        },
+        {
+          "at": "2026-09-15T16:13:55.990343Z",
+          "content_sha256": "ab6445b47c3030c1ef519af8881a6f549b86e48e4ff7ac0e55e77df4c3a433d9",
+          "event": "edited",
+          "note": "Require explicit invocation; protect description, activation gate and host policy"
+        },
+        {
+          "at": "2026-09-15T16:17:15.526134Z",
+          "event": "checked",
+          "result": {
+            "commit": "c1c0a32802223f4be824112dd83d33ad29a8b26c",
+            "sha256": "1c7014ae53f9e3ed8d1919bb615205fb3382aa931cf9d05bae2957cff098cace",
+            "status": "update_available"
+          }
+        },
+        {
+          "at": "2026-09-15T16:19:10.543381Z",
+          "content_sha256": "64b3e43663b2bcd9d601738652cb0480dc19c5fed7d84a704d2488a6c72ce5ad",
+          "event": "merged",
+          "note": "Retain the parent pstack license in the tracked upstream package while preserving the explicit-only guard",
+          "source": {
+            "commit": "c1c0a32802223f4be824112dd83d33ad29a8b26c",
+            "path": "pstack/skills/unslop",
+            "ref": "main",
+            "repository": "https://github.com/cursor/plugins.git",
+            "sha256": "1c7014ae53f9e3ed8d1919bb615205fb3382aa931cf9d05bae2957cff098cace"
+          }
+        }
+      ],
+      "last_check": {
+        "commit": "c1c0a32802223f4be824112dd83d33ad29a8b26c",
+        "sha256": "1c7014ae53f9e3ed8d1919bb615205fb3382aa931cf9d05bae2957cff098cace",
+        "status": "update_available"
+      },
+      "last_check_attempt_at": "2026-09-15T16:17:15.526134Z",
+      "last_checked_at": "2026-09-15T16:17:15.526134Z",
+      "last_updated_at": "2026-09-15T16:19:10.543381Z",
+      "origin": "imported",
+      "source": {
+        "commit": "c1c0a32802223f4be824112dd83d33ad29a8b26c",
+        "path": "pstack/skills/unslop",
+        "ref": "main",
+        "repository": "https://github.com/cursor/plugins.git",
+        "sha256": "1c7014ae53f9e3ed8d1919bb615205fb3382aa931cf9d05bae2957cff098cace"
+      }
+    }
+  }
+}
