@@ -76,6 +76,7 @@ class TrackingTests(unittest.TestCase):
     def test_import_is_stable_across_git_autocrlf_settings(self):
         for path in (self.source / "SKILL.md", self.source / "references" / "details.md", self.upstream / "LICENSE"):
             path.write_bytes(path.read_bytes().replace(b"\r\n", b"\n"))
+        (self.source / "references" / "details.md").write_bytes(b"# Details\nLF-only fixture.\n")
         self.commit()
         settings = {
             "GIT_CONFIG_COUNT": "1", "GIT_CONFIG_KEY_0": "core.autocrlf",
