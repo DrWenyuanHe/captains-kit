@@ -22,6 +22,43 @@ from registry import (
 )
 
 
+# These companion files are required by the figure workflow and its NMI reference.
+# Keep their untouched bytes in the upstream digest, alongside the main skill.
+NATURE_FIGURE_SHARED = (
+    "core/nature-results-discussion.md",
+    "core/research-compliance.md",
+    "core/ethics.md",
+    "journal-formats/nature-machine-intelligence.md",
+)
+
+
+def adapt_nature_figure(candidate):
+    """Make the upstream figure package independently installable."""
+    replacements = {
+        "SKILL.md": ("../nature-shared/", "references/nature-shared/"),
+        "manifest.yaml": ("../nature-shared/", "references/nature-shared/"),
+        "references/multipanel-evidence-architecture.md": ("../../nature-shared/", "nature-shared/"),
+        "references/nature-article-requirements.md": ("../../nature-shared/", "nature-shared/"),
+    }
+    notice = "Captain's Kit: changed shared-reference paths for standalone installation."
+    for relative, (before, after) in replacements.items():
+        path = candidate / relative
+        if not path.is_file():
+            continue
+        original = path.read_text(encoding="utf-8")
+        text = original.replace(before, after)
+        if text == original:
+            continue
+        if relative == "SKILL.md":
+            end = _frontmatter_end(text, "nature-figure", upstream=True)
+            text = text[:end] + text[end:].replace("---\n", f"---\n\n<!-- {notice} -->\n", 1)
+        elif path.suffix == ".yaml":
+            text = f"# {notice}\n" + text
+        else:
+            text = f"<!-- {notice} -->\n\n" + text
+        path.write_text(text, encoding="utf-8", newline="\n")
+
+
 @contextmanager
 def workspace(root):
     """Keep temporary downloads and the operation lock inside this repository."""
@@ -62,6 +99,38 @@ def git(directory, *arguments):
     return result.stdout
 
 
+def selected_archive(directory, commit, paths):
+    """Preserve commit-root export rules without unpacking the entire index."""
+    selected = [PurePosixPath(path) for path in paths] or [PurePosixPath(".")]
+    # Default archive builds a full index, which hydrates unrelated blobs in a
+    # partial clone. Supply only the committed attribute files in an isolated
+    # worktree instead. The archive still uses the original commit and paths,
+    # preserving ancestor export-ignore rules and export-subst commit metadata.
+    entries = git(directory, "ls-tree", "-r", "-z", commit).split(b"\0")
+    with tempfile.TemporaryDirectory(prefix="attributes-", dir=directory) as temporary:
+        attributes = Path(temporary)
+        for entry in entries:
+            if not entry:
+                continue
+            metadata, filename = entry.split(b"\t", 1)
+            path = PurePosixPath(filename.decode())
+            if path.name != ".gitattributes" or not any(
+                path.parent.is_relative_to(chosen) or chosen.is_relative_to(path.parent)
+                for chosen in selected
+            ):
+                continue
+            mode, kind, oid = metadata.decode().split()
+            if kind != "blob" or mode not in ("100644", "100755"):
+                raise ValueError("Upstream attributes must be regular files, not symlinks")
+            target = attributes / source_path(path.as_posix())
+            _plain_path(target)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(git(directory, "cat-file", "blob", oid))
+        return git(attributes, f"--git-dir={Path(directory) / '.git'}", f"--work-tree={attributes}",
+                   "archive", "--format=tar",
+                   "--worktree-attributes", commit, "--", *(f":(literal){path}" for path in paths))
+
+
 def snapshot(root, temporary, name, source, ref=None):
     """Read committed Git objects without checking out or executing upstream code."""
     repository = repository_location(root, source["repository"])
@@ -72,7 +141,10 @@ def snapshot(root, temporary, name, source, ref=None):
     clone = temporary / "git"
     clone.mkdir()
     git(clone, "init", "--quiet")
-    git(clone, "fetch", "--quiet", "--no-tags", "--depth=1", "--no-recurse-submodules", "--", repository, ref)
+    # Fetch trees first; archive retrieves only the selected skill's blobs.
+    git(clone, "remote", "add", "origin", repository)
+    git(clone, "fetch", "--quiet", "--no-tags", "--depth=1", "--filter=blob:none",
+        "--no-recurse-submodules", "--", "origin", ref)
     commit = git(clone, "rev-parse", "--verify", "FETCH_HEAD^{commit}").decode().strip()
     if not COMMIT.fullmatch(commit):
         raise ValueError("Git did not return a full commit ID")
@@ -86,7 +158,14 @@ def snapshot(root, temporary, name, source, ref=None):
     paths = [path] if path != "." else []
     if paths:
         paths.extend(p for p in licenses if p != path)
-    archive = git(clone, "archive", "--format=tar", commit, "--", *paths)
+    companions = {}
+    if name == "nature-figure" and path == "skills/nature-figure":
+        companions = {
+            f"skills/nature-shared/{relative}": f"references/nature-shared/{relative}"
+            for relative in NATURE_FIGURE_SHARED
+        }
+        paths.extend(companions)
+    archive = selected_archive(clone, commit, paths)
     destination = temporary / "candidate" / "skills" / name
     destination.mkdir(parents=True)
     with tarfile.open(fileobj=io.BytesIO(archive), mode="r:") as bundle:
@@ -102,6 +181,8 @@ def snapshot(root, temporary, name, source, ref=None):
                 relative = archived.relative_to(PurePosixPath(path))
             elif member.name in licenses:
                 relative = PurePosixPath("upstream-licenses") / member.name
+            elif member.name in companions:
+                relative = PurePosixPath(companions[member.name])
             else:
                 continue
             target = destination / str(relative)
@@ -113,8 +194,14 @@ def snapshot(root, temporary, name, source, ref=None):
                 target.write_bytes(stream.read())
             if os.name != "nt":
                 target.chmod(0o755 if member.mode & 0o111 else 0o644)
+    digest = content_hash(destination)
+    if companions:
+        for relative in companions.values():
+            if not (destination / relative).is_file():
+                raise ValueError(f"Missing required nature-figure companion: {relative}")
+        adapt_nature_figure(destination)
     validate_content(temporary / "candidate", name, upstream=True)
-    return destination, {**source, "commit": commit, "sha256": content_hash(destination)}
+    return destination, {**source, "commit": commit, "sha256": digest}
 
 
 def validate_content(root, name, *, upstream=False):
@@ -196,6 +283,9 @@ def import_skill(root, name, repository, path, ref):
             apply_unslop_guard(candidate)
             append_change(data["skills"][name], "edited", content_hash(candidate),
                           "Require explicit invocation; protect description, activation gate and host policy")
+        elif content_hash(candidate) != source["sha256"]:
+            append_change(data["skills"][name], "edited", content_hash(candidate),
+                          "Rewrite bundled shared-reference paths for independent installation")
         _install_candidate(root, temporary, name, candidate, data)
     return f"Imported {name} at {source['commit']}"
 

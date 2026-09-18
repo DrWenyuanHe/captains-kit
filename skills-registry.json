@@ -160,6 +160,61 @@
         "sha256": "17b01dd125f9620409ab13a6d521322893333b5b28a469a662b3879c77f8a639"
       }
     },
+    "nature-figure": {
+      "added_at": "2026-09-18T18:53:26.255587Z",
+      "content_sha256": "4b5e20322dac047e5bd8ca76aae203454175f5e2449b1bc0f809345285773bb7",
+      "first_imported_at": "2026-09-18T18:53:26.255587Z",
+      "history": [
+        {
+          "at": "2026-09-18T18:53:26.255587Z",
+          "content_sha256": "5305fe64e61ec2accda0a89da0305653105fc669585797bf31bc887652ce7922",
+          "event": "imported",
+          "source": {
+            "commit": "2375e0abdf42158ef149256f2c64b1f759a0d274",
+            "path": "skills/nature-figure",
+            "ref": "main",
+            "repository": "https://github.com/Yuan1z0825/nature-skills.git",
+            "sha256": "5305fe64e61ec2accda0a89da0305653105fc669585797bf31bc887652ce7922"
+          }
+        },
+        {
+          "at": "2026-09-18T18:53:26.563661Z",
+          "content_sha256": "54ca338deb27ddf0c545d7a3379e1f80c8b5fef4a4c1783a455b108be26f5bae",
+          "event": "edited",
+          "note": "Rewrite bundled shared-reference paths for independent installation"
+        },
+        {
+          "at": "2026-09-18T18:54:47.276668Z",
+          "content_sha256": "f991110b9378c85ac1d7f0b5c9dfc8279f2ef85fb722bc1b0e800413f0ffe08e",
+          "event": "edited",
+          "note": "Document the pinned import, bundled shared references, licenses and installed helper paths"
+        },
+        {
+          "at": "2026-09-18T19:07:29.755937Z",
+          "content_sha256": "ee405a78bd675b4f73601228accfda65afbd9c04e583815d19de4497ea9c0a47",
+          "event": "edited",
+          "note": "Resolve the R alignment auditor beside its sourced helper after installation or a working-directory change"
+        },
+        {
+          "at": "2026-09-18T19:11:48.467630Z",
+          "content_sha256": "4b5e20322dac047e5bd8ca76aae203454175f5e2449b1bc0f809345285773bb7",
+          "event": "edited",
+          "note": "Measure rendered R panel viewports in device coordinates so patchwork layouts produce auditable physical bounds"
+        }
+      ],
+      "last_check": null,
+      "last_check_attempt_at": null,
+      "last_checked_at": null,
+      "last_updated_at": "2026-09-18T19:11:48.467630Z",
+      "origin": "imported",
+      "source": {
+        "commit": "2375e0abdf42158ef149256f2c64b1f759a0d274",
+        "path": "skills/nature-figure",
+        "ref": "main",
+        "repository": "https://github.com/Yuan1z0825/nature-skills.git",
+        "sha256": "5305fe64e61ec2accda0a89da0305653105fc669585797bf31bc887652ce7922"
+      }
+    },
     "review-changes": {
       "added_at": "2026-09-16T16:21:25.413254Z",
       "content_sha256": "7ba88d204c0131664615780b4adb8624794ce4a4d396302f8fa81516d2697d8e",

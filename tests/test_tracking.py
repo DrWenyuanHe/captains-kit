@@ -1,11 +1,13 @@
 """Exercise provenance and update guards against real, disposable Git history."""
 
 import copy
+import io
 import json
 from pathlib import Path
 import shutil
 import subprocess
 import sys
+import tarfile
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -99,6 +101,128 @@ class TrackingTests(unittest.TestCase):
         self.import_example()
         self.assertEqual((self.local / "upstream-licenses" / "skills" / "LICENSE").read_bytes(), notice.read_bytes())
         self.assertEqual(skills.check_updates(self.root)[0]["status"], "current")
+
+    def test_import_preserves_ancestor_export_attributes_and_commit_substitution(self):
+        (self.upstream / ".gitattributes").write_text(
+            "skills/example/draft.txt export-ignore\n"
+            "skills/example/references/*.txt export-subst\n", encoding="utf-8",
+        )
+        (self.upstream / "skills" / ".gitattributes").write_text(
+            "example/parent-draft.txt export-ignore\n", encoding="utf-8",
+        )
+        (self.source / "draft.txt").write_text("Do not distribute.\n", encoding="utf-8")
+        (self.source / "parent-draft.txt").write_text("Do not distribute.\n", encoding="utf-8")
+        (self.source / "references" / "version.txt").write_text("$Format:%H$\n", encoding="utf-8")
+        (self.source / "references" / ".gitattributes").write_text(
+            "literal.txt -export-subst\n", encoding="utf-8",
+        )
+        (self.source / "references" / "literal.txt").write_text("$Format:%H$\n", encoding="utf-8")
+        commit = self.commit()
+        self.import_example()
+        self.assertFalse((self.local / "draft.txt").exists())
+        self.assertFalse((self.local / "parent-draft.txt").exists())
+        self.assertEqual((self.local / "references" / "version.txt").read_text(), commit + "\n")
+        self.assertEqual((self.local / "references" / "literal.txt").read_text(), "$Format:%H$\n")
+        self.assertEqual(skills.check_updates(self.root)[0]["status"], "current")
+
+    def test_selected_archive_works_without_unrelated_partial_clone_blobs(self):
+        (self.upstream / "unrelated.bin").write_bytes(b"Unrelated asset\n")
+        (self.upstream / ".gitattributes").write_text("*.md text eol=lf\n", encoding="utf-8")
+        commit = self.commit()
+        self.git("config", "uploadpack.allowFilter", "true")
+        clone = self.root / "partial"
+        clone.mkdir()
+        skills.git(clone, "init", "--quiet")
+        skills.git(clone, "remote", "add", "origin", self.upstream.as_uri())
+        skills.git(clone, "fetch", "--quiet", "--depth=1", "--filter=blob:none", "origin", commit)
+        # Cache precisely the skill and its attributes/notices, as if fetched on
+        # demand; the unrelated blob must remain unavailable throughout archive.
+        for path in ("skills/example/SKILL.md", "skills/example/references/details.md",
+                     ".gitattributes", "LICENSE"):
+            skills.git(clone, "show", f"{commit}:{path}")
+        with patch.dict(skills.os.environ, {"GIT_NO_LAZY_FETCH": "1"}):
+            with self.assertRaises(ValueError):
+                skills.git(clone, "cat-file", "-e", f"{commit}:unrelated.bin")
+            archive = skills.selected_archive(clone, commit, ["skills/example", "LICENSE"])
+            with tarfile.open(fileobj=io.BytesIO(archive)) as bundle:
+                self.assertIn("skills/example/SKILL.md", bundle.getnames())
+                self.assertIn("LICENSE", bundle.getnames())
+                self.assertNotIn("unrelated.bin", bundle.getnames())
+            with self.assertRaises(ValueError):
+                skills.git(clone, "cat-file", "-e", f"{commit}:unrelated.bin")
+
+    def nature_figure_source(self):
+        self.source = self.source.rename(self.source.with_name("nature-figure"))
+        (self.source / "SKILL.md").write_text(
+            "---\nname: nature-figure\ndescription: Create manuscript figures.\n---\n"
+            "Read `../nature-shared/core/nature-results-discussion.md`.\n",
+            encoding="utf-8",
+        )
+        (self.source / "manifest.yaml").write_text(
+            "reference: ../nature-shared/journal-formats/nature-machine-intelligence.md\n",
+            encoding="utf-8",
+        )
+        (self.source / "references" / "multipanel-evidence-architecture.md").write_text(
+            "[Results](../../nature-shared/core/nature-results-discussion.md)\n",
+            encoding="utf-8",
+        )
+        (self.source / "references" / "nature-article-requirements.md").write_text(
+            "Read `../../nature-shared/core/research-compliance.md`.\n", encoding="utf-8",
+        )
+        shared = self.source.with_name("nature-shared")
+        for relative in skills.NATURE_FIGURE_SHARED:
+            target = shared / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text("# Shared guidance\n", encoding="utf-8")
+        self.commit()
+        return shared
+
+    def test_nature_figure_bundles_tracked_references_for_independent_install(self):
+        shared = self.nature_figure_source()
+        skills.import_skill(self.root, "nature-figure", "./upstream", "skills/nature-figure", "main")
+        local = self.root / "skills" / "nature-figure"
+        entry = read_registry(self.root)["skills"]["nature-figure"]
+        self.assertEqual([e["event"] for e in entry["history"]], ["imported", "edited"])
+        self.assertNotEqual(entry["source"]["sha256"], entry["content_sha256"])
+        self.assertEqual(check_repository(self.root), [])
+        self.assertEqual(skills.check_updates(self.root)[0]["status"], "current")
+        for host in ("codex", "claude"):
+            project = self.root / host
+            project.mkdir()
+            installed = install(project, host, source=local, skill_name="nature-figure")
+            for relative in skills.NATURE_FIGURE_SHARED:
+                self.assertEqual((installed / "references" / "nature-shared" / relative).read_bytes(),
+                                 (shared / relative).read_bytes())
+            self.assertTrue(validate_invocation(installed))
+            self.assertIn("references/nature-shared/core/nature-results-discussion.md",
+                          (installed / "SKILL.md").read_text())
+            self.assertIn("Captain's Kit:", (installed / "SKILL.md").read_text())
+
+        # A companion-only upstream change must be visible, without replacing the
+        # installed/local files or advancing the original import date.
+        (shared / "core" / "research-compliance.md").write_text("Updated guidance.\n", encoding="utf-8")
+        reviewed = self.commit()
+        self.assertEqual(skills.check_updates(self.root)[0]["status"], "update_available")
+        self.assertIn("Updated guidance", skills.diff_skill(self.root, "nature-figure"))
+        with self.assertRaisesRegex(ValueError, "customizations"):
+            skills.update_skill(self.root, "nature-figure", reviewed)
+        bundled = local / "references" / "nature-shared" / "core" / "research-compliance.md"
+        self.assertEqual(bundled.read_text(), "# Shared guidance\n")
+        bundled.write_text("Updated guidance.\n", encoding="utf-8")
+        skills.update_skill(self.root, "nature-figure", reviewed, accept_merged=True,
+                            note="Review shared guidance and retain standalone paths")
+        updated = read_registry(self.root)["skills"]["nature-figure"]
+        self.assertEqual(updated["first_imported_at"], entry["first_imported_at"])
+        self.assertEqual(check_repository(self.root), [])
+
+    def test_nature_figure_missing_companion_leaves_no_partial_import(self):
+        shared = self.nature_figure_source()
+        (shared / "core" / "ethics.md").unlink()
+        self.commit()
+        with self.assertRaises(ValueError):
+            skills.import_skill(self.root, "nature-figure", "./upstream", "skills/nature-figure", "main")
+        self.assertFalse((self.root / "skills" / "nature-figure").exists())
+        self.assertFalse((self.root / REGISTRY).exists())
 
     def test_unslop_guard_survives_import_checks_and_reviewed_updates(self):
         (self.source / "SKILL.md").write_text(

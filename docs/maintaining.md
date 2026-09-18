@@ -46,6 +46,14 @@ attribution required by the source. Imports
 must pass the kit's packaging checks; a failed import leaves no partial skill or
 tracking entry. Existing skills are never overwritten by import.
 
+`nature-figure` also bundles four required files from upstream `nature-shared`
+under its own `references/nature-shared/`. The importer includes their untouched
+bytes in the source checksum, then rewrites the figure's shared-reference paths
+and records that adaptation as a separate edit. A change to any bundled reference
+therefore appears in `check-updates` and `diff`. Preserve these standalone paths
+when reviewing an update with `--accept-merged`. If upstream introduces another
+shared dependency, review and extend `NATURE_FIGURE_SHARED` in `scripts/skills.py`.
+
 The `unslop` import applies this library's explicit-only guard before installing
 the candidate. Its untouched upstream checksum remains the source baseline, and
 the adaptation gets a separate edit event. Upstream checks compare raw snapshots;
@@ -56,6 +64,10 @@ such as `./vendor/source-repo` are also supported for Git repositories stored he
 Skill management never writes a global skill lockfile or depends on a separate
 package manager. Temporary Git downloads and the operation lock live in the ignored
 `.captains-kit-cache/` folder inside this repository. Imported scripts are not run.
+Downloads request a filtered Git snapshot so unrelated repository assets are not
+needed; Git servers without filter support may send a complete snapshot. Archives
+retain the original commit context and committed ancestor and skill-local
+`.gitattributes`, including `export-ignore` and `export-subst` behavior.
 
 ## Tracking dates and guards
 

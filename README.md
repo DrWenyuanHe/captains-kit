@@ -18,6 +18,7 @@ configuration, setup scripts and project-specific decisions.
 | [unslop](skills/unslop/SKILL.md) | Remove AI writing patterns using the pstack editing rules. | Explicit only; enforced guard. | [Upstream source](https://github.com/cursor/plugins/tree/main/pstack/skills/unslop) |
 | [humanizer](skills/humanizer/SKILL.md) | Rewrite AI-sounding prose while preserving the writer's voice and facts. | Automatic selection allowed, or explicit invocation. | [Usage and version history](skills/humanizer/README.md) |
 | [humanizer-zh](skills/humanizer-zh/SKILL.md) | Edit Chinese prose using the Chinese adaptation of Humanizer. | Automatic selection allowed, or explicit invocation. | [Usage and examples](skills/humanizer-zh/README.md) |
+| [nature-figure](skills/nature-figure/SKILL.md) | Create, revise and audit scientific figures in Python or R, with an optional AI schematic workflow. | Automatic selection allowed; AI generation requires an explicit request. | [Usage and examples](skills/nature-figure/README_EN.md) |
 | [review-changes](skills/review-changes/SKILL.md) | Find behavioral defects and missing checks in a branch, PR or working-tree change. | Automatic selection allowed; report only unless fixes are requested. | [Checklist](skills/review-changes/references/risk-checklist.md), [sources](skills/review-changes/references/source-notes.md) |
 | [ship-changes](skills/ship-changes/SKILL.md) | Verify a scoped change and prepare or publish its PR using the project's conventions. | Automatic selection allowed; publication follows the user's requested scope. | [Verification](skills/ship-changes/references/verification.md), [sources](skills/ship-changes/references/source-notes.md) |
 | [docs-sync](skills/docs-sync/SKILL.md) | Audit or update documentation to match a branch, PR or release change. | Automatic selection allowed; audit is read-only, update makes local documentation edits. | [Checklist](skills/docs-sync/references/documentation-checklist.md), [sources](skills/docs-sync/references/source-notes.md) |
@@ -33,6 +34,14 @@ Humanizer-zh is imported from [op7418/Humanizer-zh](https://github.com/op7418/Hu
 The registry pins the full upstream Git commit for every imported skill.
 After installing the Chinese version, use `$humanizer-zh` in Codex or
 `/humanizer-zh` in Claude Code with the text you want to edit.
+
+Nature Figure is imported from [Yuan1z0825/nature-skills](https://github.com/Yuan1z0825/nature-skills).
+It includes plotting helpers, reference layouts and figure quality checks. Install
+it with `--skill nature-figure`, then use `$nature-figure` in Codex or
+`/nature-figure` in Claude Code with your data, target journal and Python/R preference.
+Runtime dependencies are separate from skill installation; see its usage guide.
+The [import notes](skills/nature-figure/IMPORT.md) describe bundled shared
+references, license notices and how to run helpers from an installed copy.
 
 `review-changes`, `ship-changes` and `docs-sync` are locally authored workflows informed by
 selected gstack ideas. They need no gstack installation and can be installed
@@ -182,3 +191,5 @@ Original kit content is [MIT licensed](LICENSE). Linked sources retain their
 publishers' rights; attribution and source summaries live with the relevant skill.
 Imported skills retain their own notices: [Unslop / pstack](skills/unslop/upstream-licenses/pstack/LICENSE)
 [Humanizer](skills/humanizer/LICENSE), and [Humanizer-zh](skills/humanizer-zh/LICENSE).
+Nature Figure retains the [upstream license](skills/nature-figure/upstream-licenses/LICENSE)
+and separate [figures4papers notices](skills/nature-figure/assets/figures4papers/THIRD_PARTY_NOTICES.md).
