@@ -227,3 +227,11 @@ compare it with the installed copy in the real project, and merge the changes yo
 want. Preserve local adaptations and use the target project's version history to
 review and recover changes. Fetching or pulling this library never updates copies
 automatically, and changing a skill does not rerun its workflow in target projects.
+
+For a recorded installation across clients, the locally authored
+[install-skills workflow](../skills/install-skills/SKILL.md) provides staging,
+comparison, private receipts and recovery guidance. It uses the project installer
+for staged host-specific copies and handles authorized personal installation as a
+separate promotion step. Keep machine-specific receipts, backup paths and ownership
+records outside the published library. This guidance does not add a global mode
+or replacement behavior to `scripts/install.py`.

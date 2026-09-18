@@ -22,6 +22,7 @@ configuration, setup scripts and project-specific decisions.
 | [review-changes](skills/review-changes/SKILL.md) | Find behavioral defects and missing checks in a branch, PR or working-tree change. | Automatic selection allowed; report only unless fixes are requested. | [Checklist](skills/review-changes/references/risk-checklist.md), [sources](skills/review-changes/references/source-notes.md) |
 | [ship-changes](skills/ship-changes/SKILL.md) | Verify a scoped change and prepare or publish its PR using the project's conventions. | Automatic selection allowed; publication follows the user's requested scope. | [Verification](skills/ship-changes/references/verification.md), [sources](skills/ship-changes/references/source-notes.md) |
 | [docs-sync](skills/docs-sync/SKILL.md) | Audit or update documentation to match a branch, PR or release change. | Automatic selection allowed; audit is read-only, update makes local documentation edits. | [Checklist](skills/docs-sync/references/documentation-checklist.md), [sources](skills/docs-sync/references/source-notes.md) |
+| [install-skills](skills/install-skills/SKILL.md) | Install or update skills for Codex and Claude Code with staged comparisons, provenance, backups and verification. | Automatic selection allowed; follows the requested installation scope. | [Host guidance](skills/install-skills/references/hosts.md), [receipts and recovery](skills/install-skills/references/receipts-and-recovery.md) |
 
 `unslop` is a customized import. Use `$unslop` in Codex, `/unslop` in Claude Code,
 or explicitly ask to "use unslop" after installing it. Ordinary writing requests
@@ -64,6 +65,12 @@ For example, after installing the chosen skill:
 
 Use `/review-changes`, `/ship-changes` or `/docs-sync` for the corresponding Claude
 Code command.
+
+Use `$install-skills install the selected library skills for Codex and Claude Code
+at user scope and keep an installation record` for a recorded installation across
+both clients. Use `/install-skills` in Claude Code. This workflow stages and compares
+copies, preserves invocation policies, and keeps receipts and backups privately
+with the destination. The repository installer below remains project-local.
 
 The [upstream source index](docs/upstream-sources.md) links the reviewed gstack
 snapshot, current sources and changelog for occasional revisits. Each adapted

@@ -160,6 +160,30 @@
         "sha256": "17b01dd125f9620409ab13a6d521322893333b5b28a469a662b3879c77f8a639"
       }
     },
+    "install-skills": {
+      "added_at": "2026-09-18T20:24:07.831050Z",
+      "content_sha256": "1c492399733f7af92905be5c1bc0a155e75bf05a6291a921e273167756f027cd",
+      "first_imported_at": null,
+      "history": [
+        {
+          "at": "2026-09-18T20:24:07.831050Z",
+          "content_sha256": "98f329ad9f66b3cbca760a8abfeda1bc40b967d3b945d4bca4feed51f7a5ee47",
+          "event": "registered"
+        },
+        {
+          "at": "2026-09-18T20:24:39.609920Z",
+          "content_sha256": "1c492399733f7af92905be5c1bc0a155e75bf05a6291a921e273167756f027cd",
+          "event": "edited",
+          "note": "Clarify backup verification before promotion in the recorded installation workflow"
+        }
+      ],
+      "last_check": null,
+      "last_check_attempt_at": null,
+      "last_checked_at": null,
+      "last_updated_at": "2026-09-18T20:24:39.609920Z",
+      "origin": "local",
+      "source": null
+    },
     "nature-figure": {
       "added_at": "2026-09-18T18:53:26.255587Z",
       "content_sha256": "4b5e20322dac047e5bd8ca76aae203454175f5e2449b1bc0f809345285773bb7",
