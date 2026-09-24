@@ -15,7 +15,10 @@ import sys
 import tarfile
 import tempfile
 
-from install import _frontmatter_end, _plain_path, _validate_name, UNSLOP_DESCRIPTION, UNSLOP_GUARD
+from install import (
+    _frontmatter_end, _plain_path, _validate_name, allows_implicit_invocation,
+    UNSLOP_DESCRIPTION, UNSLOP_GUARD,
+)
 from registry import (
     COMMIT, REGISTRY, append_change, append_check, content_hash, new_entry,
     read_registry, repository_location, source_path, tracking_errors, write_registry,
@@ -283,11 +286,33 @@ def import_skill(root, name, repository, path, ref):
             apply_unslop_guard(candidate)
             append_change(data["skills"][name], "edited", content_hash(candidate),
                           "Require explicit invocation; protect description, activation gate and host policy")
-        elif content_hash(candidate) != source["sha256"]:
-            append_change(data["skills"][name], "edited", content_hash(candidate),
-                          "Rewrite bundled shared-reference paths for independent installation")
+        else:
+            notes = []
+            if content_hash(candidate) != source["sha256"]:
+                notes.append("Rewrite bundled shared-reference paths for independent installation")
+            if strip_claude_invocation_flag(candidate, name):
+                notes.append("Remove the Claude-only invocation flag; the Codex policy carries it and the installer translates it")
+            if notes:
+                append_change(data["skills"][name], "edited", content_hash(candidate), "; ".join(notes))
         _install_candidate(root, temporary, name, candidate, data)
     return f"Imported {name} at {source['commit']}"
+
+
+def strip_claude_invocation_flag(candidate, name):
+    """Drop an upstream disable-model-invocation flag its Codex policy already states."""
+    entrypoint = candidate / "SKILL.md"
+    text = entrypoint.read_text(encoding="utf-8")
+    end = _frontmatter_end(text, name, upstream=True)
+    match = re.search(r"(?m)^disable-model-invocation:\s*[\"']?(true|false)[\"']?\s*\n", text[:end])
+    if not match:
+        return False
+    # The kit keeps invocation policy in agents/openai.yaml and derives the
+    # Claude flag at install time, so only a matching policy makes this lossless.
+    if (match.group(1) == "true") == allows_implicit_invocation(candidate):
+        raise ValueError(f"{name}: disable-model-invocation: {match.group(1)} conflicts with agents/openai.yaml; "
+                         "review and adapt its invocation policy before importing")
+    entrypoint.write_text(text[:match.start()] + text[match.end():], encoding="utf-8", newline="\n")
+    return True
 
 
 def apply_unslop_guard(candidate):

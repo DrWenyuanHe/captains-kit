@@ -19,6 +19,37 @@
       "origin": "local",
       "source": null
     },
+    "codebase-design": {
+      "added_at": "2026-09-24T18:59:18.523053Z",
+      "content_sha256": "9e7a474f37d3a3a7374b969ba929a7de50432dd9c650db50955a0ca93cf38559",
+      "first_imported_at": "2026-09-24T18:59:18.523053Z",
+      "history": [
+        {
+          "at": "2026-09-24T18:59:18.523053Z",
+          "content_sha256": "9e7a474f37d3a3a7374b969ba929a7de50432dd9c650db50955a0ca93cf38559",
+          "event": "imported",
+          "source": {
+            "commit": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+            "path": "skills/engineering/codebase-design",
+            "ref": "main",
+            "repository": "https://github.com/mattpocock/skills.git",
+            "sha256": "9e7a474f37d3a3a7374b969ba929a7de50432dd9c650db50955a0ca93cf38559"
+          }
+        }
+      ],
+      "last_check": null,
+      "last_check_attempt_at": null,
+      "last_checked_at": null,
+      "last_updated_at": null,
+      "origin": "imported",
+      "source": {
+        "commit": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+        "path": "skills/engineering/codebase-design",
+        "ref": "main",
+        "repository": "https://github.com/mattpocock/skills.git",
+        "sha256": "9e7a474f37d3a3a7374b969ba929a7de50432dd9c650db50955a0ca93cf38559"
+      }
+    },
     "docs-sync": {
       "added_at": "2026-09-16T16:39:06.905915Z",
       "content_sha256": "3724a628442247bcb0e351f505480192b4c712c8886f1af4b1848af04a0cc5af",
@@ -36,6 +67,68 @@
       "last_updated_at": null,
       "origin": "local",
       "source": null
+    },
+    "domain-modeling": {
+      "added_at": "2026-09-24T18:59:22.906072Z",
+      "content_sha256": "b7572ce9e9fa58fd6f91a2b8b5df153cbf6930b2f1e029e5fa2fa57c96f4f770",
+      "first_imported_at": "2026-09-24T18:59:22.906072Z",
+      "history": [
+        {
+          "at": "2026-09-24T18:59:22.906072Z",
+          "content_sha256": "b7572ce9e9fa58fd6f91a2b8b5df153cbf6930b2f1e029e5fa2fa57c96f4f770",
+          "event": "imported",
+          "source": {
+            "commit": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+            "path": "skills/engineering/domain-modeling",
+            "ref": "main",
+            "repository": "https://github.com/mattpocock/skills.git",
+            "sha256": "b7572ce9e9fa58fd6f91a2b8b5df153cbf6930b2f1e029e5fa2fa57c96f4f770"
+          }
+        }
+      ],
+      "last_check": null,
+      "last_check_attempt_at": null,
+      "last_checked_at": null,
+      "last_updated_at": null,
+      "origin": "imported",
+      "source": {
+        "commit": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+        "path": "skills/engineering/domain-modeling",
+        "ref": "main",
+        "repository": "https://github.com/mattpocock/skills.git",
+        "sha256": "b7572ce9e9fa58fd6f91a2b8b5df153cbf6930b2f1e029e5fa2fa57c96f4f770"
+      }
+    },
+    "grilling": {
+      "added_at": "2026-09-24T18:59:20.507472Z",
+      "content_sha256": "d43cc9b64f20dca44a7bea9fc95a19527fedba7756ab53ee813f41197d377129",
+      "first_imported_at": "2026-09-24T18:59:20.507472Z",
+      "history": [
+        {
+          "at": "2026-09-24T18:59:20.507472Z",
+          "content_sha256": "d43cc9b64f20dca44a7bea9fc95a19527fedba7756ab53ee813f41197d377129",
+          "event": "imported",
+          "source": {
+            "commit": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+            "path": "skills/productivity/grilling",
+            "ref": "main",
+            "repository": "https://github.com/mattpocock/skills.git",
+            "sha256": "d43cc9b64f20dca44a7bea9fc95a19527fedba7756ab53ee813f41197d377129"
+          }
+        }
+      ],
+      "last_check": null,
+      "last_check_attempt_at": null,
+      "last_checked_at": null,
+      "last_updated_at": null,
+      "origin": "imported",
+      "source": {
+        "commit": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+        "path": "skills/productivity/grilling",
+        "ref": "main",
+        "repository": "https://github.com/mattpocock/skills.git",
+        "sha256": "d43cc9b64f20dca44a7bea9fc95a19527fedba7756ab53ee813f41197d377129"
+      }
     },
     "humanizer": {
       "added_at": "2026-09-15T16:14:17.376431Z",
@@ -158,6 +251,43 @@
         "ref": "main",
         "repository": "https://github.com/op7418/Humanizer-zh.git",
         "sha256": "17b01dd125f9620409ab13a6d521322893333b5b28a469a662b3879c77f8a639"
+      }
+    },
+    "improve-codebase-architecture": {
+      "added_at": "2026-09-24T18:58:42.546331Z",
+      "content_sha256": "da068be4e7de2928ed396f2a93a92b412d2b109b9db2c3ab96a6c1f0e4a1c0cf",
+      "first_imported_at": "2026-09-24T18:58:42.546331Z",
+      "history": [
+        {
+          "at": "2026-09-24T18:58:42.546331Z",
+          "content_sha256": "c5236ff2c9736930c7e68b987503f8f09979e8412c128328432f2669592a98c0",
+          "event": "imported",
+          "source": {
+            "commit": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+            "path": "skills/engineering/improve-codebase-architecture",
+            "ref": "main",
+            "repository": "https://github.com/mattpocock/skills.git",
+            "sha256": "c5236ff2c9736930c7e68b987503f8f09979e8412c128328432f2669592a98c0"
+          }
+        },
+        {
+          "at": "2026-09-24T18:58:42.563527Z",
+          "content_sha256": "da068be4e7de2928ed396f2a93a92b412d2b109b9db2c3ab96a6c1f0e4a1c0cf",
+          "event": "edited",
+          "note": "Remove the Claude-only invocation flag; the Codex policy carries it and the installer translates it"
+        }
+      ],
+      "last_check": null,
+      "last_check_attempt_at": null,
+      "last_checked_at": null,
+      "last_updated_at": "2026-09-24T18:58:42.563527Z",
+      "origin": "imported",
+      "source": {
+        "commit": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+        "path": "skills/engineering/improve-codebase-architecture",
+        "ref": "main",
+        "repository": "https://github.com/mattpocock/skills.git",
+        "sha256": "c5236ff2c9736930c7e68b987503f8f09979e8412c128328432f2669592a98c0"
       }
     },
     "install-skills": {

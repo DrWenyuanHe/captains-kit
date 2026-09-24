@@ -267,6 +267,32 @@ class TrackingTests(unittest.TestCase):
         self.assertEqual(entry["source"]["commit"], reviewed)
         self.assertEqual(check_repository(self.root), [])
 
+    def test_import_moves_matching_claude_invocation_flag_to_host_translation(self):
+        (self.source / "SKILL.md").write_text(
+            "---\nname: example\ndescription: A reusable example workflow.\n"
+            "disable-model-invocation: true\n---\nRun on request.\n", encoding="utf-8",
+        )
+        self.commit()
+        with self.assertRaisesRegex(ValueError, "conflicts with agents/openai.yaml"):
+            self.import_example()
+        self.assertFalse(self.local.exists())
+        self.assertFalse((self.root / REGISTRY).exists())
+
+        (self.source / "agents").mkdir()
+        (self.source / "agents" / "openai.yaml").write_text(
+            "policy:\n  allow_implicit_invocation: false\n", encoding="utf-8",
+        )
+        self.commit()
+        entry = self.import_example()
+        self.assertEqual([event["event"] for event in entry["history"]], ["imported", "edited"])
+        self.assertNotIn("disable-model-invocation", (self.local / "SKILL.md").read_text())
+        self.assertEqual(check_repository(self.root), [])
+        self.assertEqual(skills.check_updates(self.root)[0]["status"], "current")
+        project = self.root / "claude"
+        project.mkdir()
+        installed = install(project, "claude", source=self.local, skill_name="example")
+        self.assertIn("disable-model-invocation: true\n---", (installed / "SKILL.md").read_text())
+
     def test_unslop_installer_rejects_removed_policy_description_or_guard(self):
         local = self.root / "skills" / "unslop"
         local.mkdir()

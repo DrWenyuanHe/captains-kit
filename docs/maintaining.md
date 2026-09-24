@@ -54,6 +54,12 @@ therefore appears in `check-updates` and `diff`. Preserve these standalone paths
 when reviewing an update with `--accept-merged`. If upstream introduces another
 shared dependency, review and extend `NATURE_FIGURE_SHARED` in `scripts/skills.py`.
 
+Some upstream skills carry Claude's `disable-model-invocation` in `SKILL.md`.
+When their `agents/openai.yaml` policy already states the same behavior, import
+removes the flag and records the adaptation as a separate edit; the Claude
+installer adds it back. A mismatched or missing policy stops the import for review.
+Later updates of such a skill go through `update --accept-merged`.
+
 The `unslop` import applies this library's explicit-only guard before installing
 the candidate. Its untouched upstream checksum remains the source baseline, and
 the adaptation gets a separate edit event. Upstream checks compare raw snapshots;
