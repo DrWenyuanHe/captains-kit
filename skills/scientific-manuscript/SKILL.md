@@ -1,6 +1,6 @@
 ---
 name: scientific-manuscript
-description: Create, revise and release scientific manuscripts and theses in Word with EndNote citations. Bootstraps a manuscript project (even from an empty folder), drafts in the author's house style, makes versioned tracked-change revisions checked by a verification gate, runs QA passes and reference audits, adapts to a journal and prepares submission packages. Use for journal-article or thesis work in .docx; not for plotting alone (use nature-figure) or prose editing outside a manuscript project.
+description: Create, revise and release scientific manuscripts and theses in Word with EndNote citations. Bootstraps a manuscript project (even from an empty folder), drafts in the author's house style, makes versioned tracked-change revisions checked by a verification gate, runs QA passes and reference audits, adapts to a journal and prepares submission packages. Use only inside a manuscript project (a folder with manuscript.json) or when asked to start or adopt one, for journal-article or thesis work in .docx; never for software repositories, code or code documentation, plotting alone (use nature-figure) or prose editing outside a manuscript project.
 ---
 
 # Scientific manuscript
@@ -15,9 +15,11 @@ this skill's folder. Run it from the project folder; every command has `--help`.
 
 ## Start every task here
 
-1. Locate the project: walk up from the working folder to `manuscript.json`, then read the
-   project's `AGENTS.md` and `PROJECT_INDEX.json`. With no project and a request to start one,
-   follow [bootstrap](references/bootstrap.md). A project's own rules override this skill.
+1. Locate the project: walk up from the working folder to `manuscript.json` (the search stops
+   at a repository root, so a code repository is never part of a manuscript project), then read
+   the project's `AGENTS.md` and `PROJECT_INDEX.json`. With no project, run no `msw.py` command
+   and change nothing unless the user asks to start or adopt one; then follow
+   [bootstrap](references/bootstrap.md). A project's own rules override this skill.
 2. Run `msw.py status` before editing. It reports the current version and whether its files
    still match their hashes, Word files saved but not registered, Word lock files, passes in
    flight, open items and unfinished ledger operations; finish an interrupted command by running

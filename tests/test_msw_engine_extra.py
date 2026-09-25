@@ -162,6 +162,28 @@ class MoreEngineTests(unittest.TestCase):
         report = verify(self.source, Package(result.blob), result.manifest)
         self.assertEqual(check(report, "citation_context")["status"], "PASS")
 
+    def test_a_code_repository_is_never_part_of_a_manuscript_project(self):
+        import contextlib
+        import io
+        from mswlib import cli
+        from mswlib.config import find_config
+        with tempfile.TemporaryDirectory() as folder:
+            project = Path(folder) / "manuscript"
+            (project / "04_Analysis" / "tool" / ".git").mkdir(parents=True)
+            (project / "04_Analysis" / "tool" / "src").mkdir()
+            (project / "manuscript.json").write_text("{}", encoding="utf-8")
+            code = project / "04_Analysis" / "tool" / "src"
+            self.assertEqual(find_config(project / "04_Analysis"), project / "manuscript.json")
+            self.assertIsNone(find_config(code))           # the repository root ends the search
+            before = sorted(p.relative_to(folder).as_posix() for p in Path(folder).rglob("*"))
+            err = io.StringIO()
+            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(err):
+                status = cli.main(["status", "--project", str(code)])
+                claim = cli.main(["pass", "new", "--slug", "code change", "--project", str(code)])
+            self.assertEqual((status, claim), (2, 2), err.getvalue())
+            self.assertIn("no manuscript.json", err.getvalue())
+            self.assertEqual(sorted(p.relative_to(folder).as_posix() for p in Path(folder).rglob("*")), before)
+
     def test_records_name_files_without_machine_paths(self):
         from mswlib.config import record_path
         with tempfile.TemporaryDirectory() as folder:

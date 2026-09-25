@@ -22,7 +22,11 @@ def safe_console():
 
 
 def find_config(start=None) -> Path | None:
-    """Walk up from `start` (a file or folder; default: cwd) to the nearest manuscript.json."""
+    """Walk up from `start` (a file or folder; default: cwd) to the nearest manuscript.json.
+
+    The walk stops at a repository root (a folder holding `.git`): a code repository, even one
+    placed inside a manuscript project, is never treated as part of that project.
+    """
     path = Path(start or os.getcwd()).resolve()
     if path.is_file():
         path = path.parent
@@ -30,6 +34,8 @@ def find_config(start=None) -> Path | None:
         candidate = folder / CONFIG_NAME
         if candidate.is_file():
             return candidate
+        if (folder / ".git").exists():
+            return None
     return None
 
 

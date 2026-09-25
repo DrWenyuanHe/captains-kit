@@ -395,7 +395,7 @@
     },
     "scientific-manuscript": {
       "added_at": "2026-09-25T07:11:50.336330Z",
-      "content_sha256": "94f1c5b2d5e8d8bf47e12e86670f5fcad036a99d3bbb4e2e2e599f1cac5792e0",
+      "content_sha256": "10eda1952ae9e663d6f9febaf8c2c81ece1a790199c777cc1fe3cabbab880f32",
       "first_imported_at": null,
       "history": [
         {
@@ -420,12 +420,18 @@
           "content_sha256": "94f1c5b2d5e8d8bf47e12e86670f5fcad036a99d3bbb4e2e2e599f1cac5792e0",
           "event": "edited",
           "note": "Replace the deletable mutation lock file with an operating-system lock on a file that is never deleted, so projects that forbid deleting any file are respected and a crashed command leaves no lock."
+        },
+        {
+          "at": "2026-09-25T15:05:48.062349Z",
+          "content_sha256": "10eda1952ae9e663d6f9febaf8c2c81ece1a790199c777cc1fe3cabbab880f32",
+          "event": "edited",
+          "note": "Keep the harness out of code repositories: project discovery stops at a repository root, and the description and start rules limit the skill to manuscript projects."
         }
       ],
       "last_check": null,
       "last_check_attempt_at": null,
       "last_checked_at": null,
-      "last_updated_at": "2026-09-25T14:38:08.023582Z",
+      "last_updated_at": "2026-09-25T15:05:48.062349Z",
       "origin": "local",
       "source": null
     },
