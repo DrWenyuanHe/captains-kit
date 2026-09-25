@@ -19,6 +19,7 @@ configuration, setup scripts and project-specific decisions.
 | [humanizer](skills/humanizer/SKILL.md) | Rewrite AI-sounding prose while preserving the writer's voice and facts. | Automatic selection allowed, or explicit invocation. | [Usage and version history](skills/humanizer/README.md) |
 | [humanizer-zh](skills/humanizer-zh/SKILL.md) | Edit Chinese prose using the Chinese adaptation of Humanizer. | Automatic selection allowed, or explicit invocation. | [Usage and examples](skills/humanizer-zh/README.md) |
 | [nature-figure](skills/nature-figure/SKILL.md) | Create, revise and audit scientific figures in Python or R, with an optional AI schematic workflow. | Automatic selection allowed; AI generation requires an explicit request. | [Usage and examples](skills/nature-figure/README_EN.md) |
+| [scientific-manuscript](skills/scientific-manuscript/SKILL.md) | Create, revise and release Word manuscripts and theses: project bootstrap, house-style drafting, gated tracked-change versions, EndNote and reference audits, journal adaptation. | Automatic selection allowed; edits only through gated tracked-change builds. | [Usage guide](skills/scientific-manuscript/README.md) |
 | [review-changes](skills/review-changes/SKILL.md) | Find behavioral defects and missing checks in a branch, PR or working-tree change. | Automatic selection allowed; report only unless fixes are requested. | [Checklist](skills/review-changes/references/risk-checklist.md), [sources](skills/review-changes/references/source-notes.md) |
 | [ship-changes](skills/ship-changes/SKILL.md) | Verify a scoped change and prepare or publish its PR using the project's conventions. | Automatic selection allowed; publication follows the user's requested scope. | [Verification](skills/ship-changes/references/verification.md), [sources](skills/ship-changes/references/source-notes.md) |
 | [docs-sync](skills/docs-sync/SKILL.md) | Audit or update documentation to match a branch, PR or release change. | Automatic selection allowed; audit is read-only, update makes local documentation edits. | [Checklist](skills/docs-sync/references/documentation-checklist.md), [sources](skills/docs-sync/references/source-notes.md) |
@@ -79,6 +80,24 @@ with the destination. The repository installer below remains project-local.
 The [upstream source index](docs/upstream-sources.md) links the reviewed gstack
 snapshot, current sources and changelog for occasional revisits. Each adapted
 skill keeps its source-review history alongside its attribution.
+
+## Scientific kit
+
+`scientific-manuscript` and `nature-figure` together cover manuscript work from a new
+project to a submission package. `scientific-manuscript` is locally authored from the
+author's own thesis and journal-manuscript projects. It bootstraps the project folder,
+drafts in the author's house style, and makes every change as a minimal Word tracked change.
+Each new version passes a verification gate before it is shown to anyone. The skill also
+handles EndNote citations, reference audits and journal adaptation. Figures are delegated to
+`nature-figure`. Its `scripts/msw.py` tools need only Python 3.10 or newer. LibreOffice and
+Word are optional, for proofs and native checks.
+
+Install both with `--skill scientific-manuscript` and `--skill nature-figure`; add
+`--skill humanizer` for the prose passes, which otherwise fall back to the skill's own rule
+table. Then ask, for
+example, `$scientific-manuscript bootstrap a manuscript project here for the Journal of
+Endocrinology` or `/scientific-manuscript make the next tracked version from my latest save with
+these edits`. See the [usage guide](skills/scientific-manuscript/README.md).
 
 ## Installation
 
@@ -197,6 +216,7 @@ invocation behavior, testing changes and updating installed copies.
 - [scripts/skills.py](scripts/skills.py) and [skills-registry.json](skills-registry.json): imports, source versions, checks, updates and timestamp history.
 - [scripts/check.py](scripts/check.py): validate the library or a selected skill.
 - [tests/test_tracking.py](tests/test_tracking.py), [tests/test_install.py](tests/test_install.py) and [tests/test_check.py](tests/test_check.py): tracking, installation and validation behavior, also run by [CI](.github/workflows/check.yml).
+- [tests/msw_fixtures.py](tests/msw_fixtures.py) and the `tests/test_msw_*.py` files: synthetic Word documents and tests for the scientific-manuscript tools (engine, gate, project lifecycle, drafting, lint, references, proofs).
 
 Original kit content is [MIT licensed](LICENSE). Linked sources retain their
 publishers' rights; attribution and source summaries live with the relevant skill.

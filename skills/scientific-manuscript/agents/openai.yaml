@@ -1,0 +1,6 @@
+interface:
+  display_name: "Scientific Manuscript"
+  short_description: "Create, revise and release Word manuscripts with tracked changes and EndNote"
+  default_prompt: "Use $scientific-manuscript to make the next tracked version of this manuscript."
+policy:
+  allow_implicit_invocation: true

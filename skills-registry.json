@@ -393,6 +393,36 @@
       "origin": "local",
       "source": null
     },
+    "scientific-manuscript": {
+      "added_at": "2026-09-25T07:11:50.336330Z",
+      "content_sha256": "3eb8053c0861332a997b70a2540213d952aa439ac14f30daad0d29eb26bf2633",
+      "first_imported_at": null,
+      "history": [
+        {
+          "at": "2026-09-25T07:11:50.336330Z",
+          "content_sha256": "ea7be41e9ddf92b6b22df5881a34cae0656b8b7b33e46d54e4b6c62b28578953",
+          "event": "registered"
+        },
+        {
+          "at": "2026-09-25T08:00:27.076596Z",
+          "content_sha256": "0439cef71fcdcc1cdc424872291dc69926a736b3b8fdc438fbdccab905f21b44",
+          "event": "edited",
+          "note": "Fix the independent Codex review findings: reject-view property and picture checks, dangling relationship ids, reordered values in science_guard, inherited-style unset, vertical alignment swaps, no-break-space merges, empty rewrites, structured-abstract word counts, empty comments parts, track-revisions switch; resumable intake, author-save and retarget; project mutation lock; relative journal-profile and drift paths."
+        },
+        {
+          "at": "2026-09-25T08:15:15.660151Z",
+          "content_sha256": "3eb8053c0861332a997b70a2540213d952aa439ac14f30daad0d29eb26bf2633",
+          "event": "edited",
+          "note": "Close the residual review items: resume a first intake without --as-version, compare whole equations in the rejected view, keep a superscript set over a style's subscript, and add track changes to an empty settings part."
+        }
+      ],
+      "last_check": null,
+      "last_check_attempt_at": null,
+      "last_checked_at": null,
+      "last_updated_at": "2026-09-25T08:15:15.660151Z",
+      "origin": "local",
+      "source": null
+    },
     "ship-changes": {
       "added_at": "2026-09-16T16:21:26.763390Z",
       "content_sha256": "b97d74a2c170a5bac07e4926786bc61cd426b2aeb3c8452f1892dc656096b186",
