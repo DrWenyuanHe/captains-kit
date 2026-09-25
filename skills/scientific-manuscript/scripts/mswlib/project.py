@@ -718,67 +718,72 @@ def _project(args) -> Project:
 #
 # A command that changes the project reads the indexes, works, and writes them back. Two at once
 # would each write back what they read, so the later one would silently drop the other's change
-# (and both would give their ledger lines the same seq). Every such command therefore holds
-# MUTATION_LOCK, created exclusively with its PID, command and start time, from before it reads
-# anything until its ledger event completes, and removes it when it stops; a second one refuses.
-# Read-only commands (status, verify-project, figure status, plans and dry runs) do not take it.
-# The lock is transient, not project content (git ignores it). A lock whose command is no longer
-# running is reported with advice, never broken silently.
+# (and both would give their ledger lines the same seq). Every such command therefore holds an
+# operating-system lock on MUTATION_LOCK from before it reads anything until its ledger event
+# completes; a second one refuses. The lock file is created once and never deleted (projects that
+# forbid deleting any file are respected); it holds the current holder's PID, command and start
+# time. The operating system releases the lock when the command ends, even when it crashes, so no
+# lock is ever left behind. Read-only commands (status, verify-project, figure status, plans and
+# dry runs) do not take it. The file is not project content (git ignores it).
 
-def _pid_running(pid) -> bool | None:
-    """Is process `pid` running on this computer? None when that cannot be told."""
-    try:
-        pid = int(pid)
-    except (TypeError, ValueError):
-        return None
-    if pid <= 0:
-        return None
-    if pid == os.getpid():
-        return True
+_LOCK_BYTE = 0x7FFFFFF0     # the byte locked on Windows: far past the record, which stays readable
+
+
+def _try_lock(handle) -> bool:
     try:
         if os.name == "nt":
-            # os.kill(pid, 0) would send Ctrl+C on Windows: ask the kernel about the process instead.
-            import ctypes
-            from ctypes import wintypes
-            kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
-            kernel32.OpenProcess.restype = wintypes.HANDLE
-            kernel32.OpenProcess.argtypes = (wintypes.DWORD, wintypes.BOOL, wintypes.DWORD)
-            kernel32.GetExitCodeProcess.argtypes = (wintypes.HANDLE, ctypes.POINTER(wintypes.DWORD))
-            kernel32.CloseHandle.argtypes = (wintypes.HANDLE,)
-            handle = kernel32.OpenProcess(0x1000, False, pid)        # PROCESS_QUERY_LIMITED_INFORMATION
-            if not handle:
-                error = ctypes.get_last_error()
-                return True if error == 5 else False if error == 87 else None   # access denied / no such process
-            try:
-                code = wintypes.DWORD()
-                if not kernel32.GetExitCodeProcess(handle, ctypes.byref(code)):
-                    return None
-                return code.value == 259                                       # STILL_ACTIVE
-            finally:
-                kernel32.CloseHandle(handle)
-        os.kill(pid, 0)
-    except ProcessLookupError:
-        return False
-    except PermissionError:
+            import msvcrt
+            handle.seek(_LOCK_BYTE)
+            msvcrt.locking(handle.fileno(), msvcrt.LK_NBLCK, 1)
+        else:
+            import fcntl
+            fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
         return True
-    except (OSError, AttributeError, ValueError):
-        return None
-    return True
+    except OSError:
+        return False
+
+
+def _unlock(handle) -> None:
+    try:
+        if os.name == "nt":
+            import msvcrt
+            handle.seek(_LOCK_BYTE)
+            msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
+        else:
+            import fcntl
+            fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+    except OSError:
+        pass
+
+
+def _open_lock(path: Path):
+    """The lock file, opened for reading and writing and created when missing (never truncated
+    on open, never deleted)."""
+    _makedirs(path.parent)
+    return os.fdopen(os.open(fs(path), os.O_RDWR | os.O_CREAT | getattr(os, "O_BINARY", 0)), "r+b")
 
 
 def lock_state(root) -> dict | None:
-    """The mutation lock of the project at `root`, or None: its record (pid, command, utc, host) and
-    `running` (True, False, or None when this computer cannot tell). Reads only."""
+    """The command holding the project's mutation lock, or None when no command holds it: its
+    record (pid, command, utc, host). Reads only (the lock is tested and let go at once)."""
     path = Path(root) / MUTATION_LOCK
     if not _exists(path):
         return None
     try:
-        record = json.loads(_fsp(path).read_text(encoding="utf-8"))
-    except (OSError, ValueError):
-        record = {}
-    record = {key: record.get(key) for key in ("pid", "command", "utc", "host")} if isinstance(record, dict) else {}
-    here = record.get("host") in (None, "", platform.node())
-    return dict(record, running=_pid_running(record.get("pid")) if here and record.get("pid") else None)
+        handle = _open_lock(path)
+    except OSError:
+        return None
+    with handle:
+        if _try_lock(handle):
+            _unlock(handle)
+            return None
+        try:
+            handle.seek(0)
+            record = json.loads(handle.read(4096).decode("utf-8") or "{}")
+        except (OSError, ValueError, UnicodeDecodeError):
+            record = {}
+    record = record if isinstance(record, dict) else {}
+    return {key: record.get(key) for key in ("pid", "command", "utc", "host")}
 
 
 def _lock_holder(info: dict) -> str:
@@ -791,71 +796,36 @@ def _lock_holder(info: dict) -> str:
 
 
 def lock_advice(info: dict, refused: bool = True) -> str:
-    """What to do about a mutation lock another command holds or left behind: the reason a command
-    refuses (`refused`), else the advice `status` gives."""
-    remove = (f"delete {MUTATION_LOCK} by hand (a transient lock holding only the PID, command and time, not "
-              "project content; git ignores it)")
-    if info.get("running") is False:
-        return (f"{MUTATION_LOCK} was left by {_lock_holder(info)}, which is no longer running (it was stopped or "
-                f"crashed); {'nothing was changed, and ' if refused else ''}commands that change the project refuse "
-                f"while it exists. Make sure no msw command is running on this project, {remove}, then run "
-                "`msw.py status` and first run again any unfinished operation it lists.")
+    """What to do about a mutation lock another command holds: the reason a command refuses
+    (`refused`), else the advice `status` gives."""
     if not refused:
-        return (f"{_lock_holder(info)} is changing this project (it holds {MUTATION_LOCK}); other commands that "
-                f"change the project refuse until it finishes. If no msw command is running on this project, {remove}.")
-    return (f"another msw command is changing this project: {_lock_holder(info)} holds {MUTATION_LOCK}; nothing was "
-            "changed. Wait until it finishes, then run this command again (status, verify-project, figure status, "
-            f"plans and dry runs work meanwhile). If no msw command is running on this project, {remove} and run "
-            "`msw.py status`.")
+        return (f"{_lock_holder(info)} is changing this project; other commands that change the project refuse "
+                "until it finishes (the lock is released when it ends, even if it crashes).")
+    return (f"another msw command is changing this project: {_lock_holder(info)}; nothing was changed. Wait until "
+            "it finishes, then run this command again (status, verify-project, figure status, plans and dry runs "
+            "work meanwhile). The lock is released when that command ends, even if it crashes.")
 
 
 @contextlib.contextmanager
 def mutation_lock(root, command: str):
     """Hold the project's mutation lock while the block runs; refuse when another command holds it."""
     path = Path(root) / MUTATION_LOCK
-    _makedirs(path.parent)
-    token = os.urandom(8).hex()
+    handle = _open_lock(path)
     try:
-        handle = open(fs(path), "x", encoding="utf-8", newline="\n")
-    except FileExistsError:
-        raise ProjectError(lock_advice(lock_state(root) or {})) from None
-    try:
-        with handle:
-            handle.write(json.dumps({"pid": os.getpid(), "command": command, "utc": utc_now(),
-                                     "host": platform.node(), "token": token}) + "\n")
-            handle.flush()
-            os.fsync(handle.fileno())
-        yield
-    finally:
-        _release_lock(path, token)
-
-
-def _release_lock(path: Path, token: str) -> None:
-    """Remove the lock this command created (never another command's), retried while a scanner holds it."""
-    try:
-        record = json.loads(_fsp(path).read_text(encoding="utf-8") or "{}")
-        held = record.get("token") if isinstance(record, dict) else None
-        ours = held == token or held is None          # None: our own write never finished
-    except FileNotFoundError:
-        return
-    except (OSError, ValueError):
-        ours = True
-    if not ours:
-        return
-    for delay in (*REPLACE_RETRY_DELAYS, None):
+        if not _try_lock(handle):
+            raise ProjectError(lock_advice(lock_state(root) or {}))
         try:
-            os.remove(fs(path))
-            return
-        except FileNotFoundError:
-            return
-        except PermissionError:
-            if delay is None:
-                break
-            time.sleep(delay)
-        except OSError:
-            break
-    print(f"WARNING: could not remove {MUTATION_LOCK}; once no msw command is running, delete it by hand.",
-          file=sys.stderr)
+            record = json.dumps({"pid": os.getpid(), "command": command, "utc": utc_now(),
+                                 "host": platform.node()}) + "\n"
+            handle.seek(0)
+            handle.truncate(0)
+            handle.write(record.encode("utf-8"))
+            handle.flush()
+            yield
+        finally:
+            _unlock(handle)
+    finally:
+        handle.close()
 
 
 def _locked(function, command, when=None, root=None):
@@ -3220,8 +3190,7 @@ def print_status(report: dict) -> None:
     print("Word lock files: " + (", ".join(report["locks"]) if report["locks"] else "none"))
     held = report.get("mutation_lock")
     if held:
-        state = {True: "running", False: "NOT RUNNING (left behind)"}.get(held.get("running"), "cannot tell if running")
-        print(f"Mutation lock: {MUTATION_LOCK} held by {_lock_holder(held)}, {state}")
+        print(f"Mutation lock: held by {_lock_holder(held)} (another command is changing the project)")
     if report["passes"]:
         print("Passes in flight:")
         for item in report["passes"]:

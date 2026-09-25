@@ -395,7 +395,7 @@
     },
     "scientific-manuscript": {
       "added_at": "2026-09-25T07:11:50.336330Z",
-      "content_sha256": "3eb8053c0861332a997b70a2540213d952aa439ac14f30daad0d29eb26bf2633",
+      "content_sha256": "94f1c5b2d5e8d8bf47e12e86670f5fcad036a99d3bbb4e2e2e599f1cac5792e0",
       "first_imported_at": null,
       "history": [
         {
@@ -414,12 +414,18 @@
           "content_sha256": "3eb8053c0861332a997b70a2540213d952aa439ac14f30daad0d29eb26bf2633",
           "event": "edited",
           "note": "Close the residual review items: resume a first intake without --as-version, compare whole equations in the rejected view, keep a superscript set over a style's subscript, and add track changes to an empty settings part."
+        },
+        {
+          "at": "2026-09-25T14:38:08.023582Z",
+          "content_sha256": "94f1c5b2d5e8d8bf47e12e86670f5fcad036a99d3bbb4e2e2e599f1cac5792e0",
+          "event": "edited",
+          "note": "Replace the deletable mutation lock file with an operating-system lock on a file that is never deleted, so projects that forbid deleting any file are respected and a crashed command leaves no lock."
         }
       ],
       "last_check": null,
       "last_check_attempt_at": null,
       "last_checked_at": null,
-      "last_updated_at": "2026-09-25T08:15:15.660151Z",
+      "last_updated_at": "2026-09-25T14:38:08.023582Z",
       "origin": "local",
       "source": null
     },

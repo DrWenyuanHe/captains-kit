@@ -322,15 +322,15 @@ raced for the same version number more than once.
    unreleased.
 5. One command changes the project at a time. `intake`, `author-save`, `pass new`,
    `release apply`, `archive apply`, `retarget`, `outstanding`, `figure add|register|promote`
-   and `init --adopt` of an existing project hold `06_Project_Docs/.msw_mutation.lock` from
-   before they read the indexes until their ledger event completes. They create it exclusively
-   with their PID, command and start time and remove it when they stop, so a second session
-   cannot write back indexes it read before the first one changed them. Another such command
-   refuses with nothing changed: wait and run it again. `status`, `verify-project`,
-   `figure status`, plans and dry runs do not need the lock. If the command that holds it is no
-   longer running, the refusal and `status` say so; once no msw command is running, the author (or
-   you, with their agreement) deletes the lock by hand. It is msw's transient lock, not project
-   content, and git ignores it. Then run `msw.py status` and rerun any unfinished operation.
+   and `init --adopt` of an existing project hold an operating-system lock on
+   `06_Project_Docs/.msw_mutation.lock` from before they read the indexes until their ledger
+   event completes, so a second session cannot write back indexes it read before the first one
+   changed them. Another such command refuses with nothing changed: wait and run it again.
+   `status`, `verify-project`, `figure status`, plans and dry runs do not need the lock, and
+   `status` names the command holding it. The operating system releases the lock when the
+   command ends, even if it crashes, so no lock is left behind. The file is created once and never
+   deleted (it holds only the current holder's PID, command and start time), which keeps projects
+   that forbid deleting any file intact; git ignores it.
 
 ## What not to keep
 

@@ -52,12 +52,16 @@ def sha(path) -> str:
 
 
 def snapshot(root: Path) -> dict:
+    """Every project file and its hash, except msw's lock file (kept, never deleted, but rewritten
+    with each holder's PID; it is transient state, not project content)."""
     files = {}
     for base, dirs, names in os.walk(root):
         dirs[:] = [d for d in dirs if d != ".git"]
         for name in names:
             path = Path(base) / name
-            files[path.relative_to(root).as_posix()] = sha(path)
+            rel = path.relative_to(root).as_posix()
+            if rel != proj.MUTATION_LOCK:
+                files[rel] = sha(path)
     return files
 
 
@@ -1759,7 +1763,8 @@ class MutationLockTests(ProjectCase):
         self.assertIn("`msw.py figure add`", err)
         self.assertIn(f"PID {os.getpid()}", err)
         self.assertEqual(self.figure_ids(), ["Figure_08", "Figure_01"])
-        self.assertFalse((self.root / proj.MUTATION_LOCK).exists(), "the holder removes its lock")
+        self.assertIsNone(proj.lock_state(self.root), "the holder releases its lock")
+        self.assertTrue((self.root / proj.MUTATION_LOCK).is_file(), "the lock file is kept, never deleted")
         self.assertFalse((self.root / "02_Figures" / "Figure_02_Outcomes").exists())
         self.run_ok(*second)
         self.assertEqual(self.figure_ids(), ["Figure_08", "Figure_01", "Figure_02"])
@@ -1772,50 +1777,41 @@ class MutationLockTests(ProjectCase):
                          ["first session"])
         seqs = [e["seq"] for e in ledger(self.root)]
         self.assertEqual(len(seqs), len(set(seqs)))
-        self.assertFalse((self.root / proj.MUTATION_LOCK).exists())
+        self.assertIsNone(proj.lock_state(self.root))
         # A failing command releases the lock too.
         with mock.patch.object(proj.Project, "commit_indexes", side_effect=OSError("disk went away (simulated)")):
             self.run_refused("outstanding", "add", "--text", "third")
-        self.assertFalse((self.root / proj.MUTATION_LOCK).exists())
+        self.assertIsNone(proj.lock_state(self.root))
 
-    def test_read_only_commands_ignore_the_lock_and_a_left_lock_is_reported(self):
-        lock = self.root / proj.MUTATION_LOCK
-        lock.write_text(json.dumps({"pid": os.getpid(), "command": "release apply", "utc": "2026-01-10T18:02:11Z",
-                                    "host": platform.node()}) + "\n", encoding="utf-8")
+    def test_read_only_commands_ignore_the_lock_and_a_crashed_holder_leaves_none(self):
         scratch = self.root / "90_Agent_Work" / "Scratch" / "note.txt"
         scratch.write_text("synthetic\n", encoding="utf-8")
-        before = snapshot(self.root)
-        self.assertIn("Mutation lock:", self.run_ok("status"))
-        code, out, err = cli("verify-project", "--project", self.root)
-        self.assertEqual(code, 0, out + err)
-        self.run_ok("figure", "status")
-        other = self.base / "received" / "second.docx"
-        other.write_bytes(msw_fixtures.make_docx(multi_chunk=True))
-        self.run_ok("intake", other, "--as-version", "V01", "--role", "incoming", "--dry-run")
-        self.run_ok("retarget", "--venue", "JOE", "--target-journal", "Journal of Examples", "--dry-run")
-        self.run_ok("archive", "plan", "--reason", "Old", scratch)
-        message = self.run_refused("outstanding", "add", "--text", "while another command runs")
-        self.assertIn("`msw.py release apply`", message)
-        self.assertIn("Wait until it finishes", message)
-        self.assertEqual(snapshot(self.root), before)
-        # A lock left by a command that is no longer running is reported with advice, never broken.
-        with mock.patch.object(proj, "_pid_running", return_value=False):
-            message = self.run_refused("archive", "apply", "--reason", "Old", scratch)
-            status = proj.collect_status(proj.Project(self.root), git=False)
-        self.assertIn("no longer running", message)
-        self.assertIn(f"delete {proj.MUTATION_LOCK} by hand", message)
-        self.assertEqual(status["mutation_lock"]["running"], False)
-        self.assertTrue(any("no longer running" in line for line in status["suggestions"]), status["suggestions"])
-        self.assertEqual(snapshot(self.root), before, "the left lock is kept and nothing else changed")
-        lock.unlink()                                   # what the advice asks the author to do
+        with proj.mutation_lock(self.root, "release apply"):     # another session holds the lock
+            before = snapshot(self.root)
+            self.assertIn("Mutation lock: held by `msw.py release apply`", self.run_ok("status"))
+            code, out, err = cli("verify-project", "--project", self.root)
+            self.assertEqual(code, 0, out + err)
+            self.run_ok("figure", "status")
+            other = self.base / "received" / "second.docx"
+            other.write_bytes(msw_fixtures.make_docx(multi_chunk=True))
+            self.run_ok("intake", other, "--as-version", "V01", "--role", "incoming", "--dry-run")
+            self.run_ok("retarget", "--venue", "JOE", "--target-journal", "Journal of Examples", "--dry-run")
+            self.run_ok("archive", "plan", "--reason", "Old", scratch)
+            message = self.run_refused("outstanding", "add", "--text", "while another command runs")
+            self.assertIn("`msw.py release apply`", message)
+            self.assertIn("Wait until it finishes", message)
+            self.assertEqual(snapshot(self.root), before)
         self.run_ok("archive", "apply", "--reason", "Old", scratch)
-        self.assertFalse(lock.exists())
         self.assertIn(proj.MUTATION_LOCK, (self.root / ".gitignore").read_text(encoding="utf-8").splitlines())
-        # A finished process is told apart from a running one.
-        pid = int(subprocess.run([sys.executable, "-c", "import os; print(os.getpid())"], capture_output=True,
-                                 text=True, check=True).stdout)
-        self.assertIs(proj._pid_running(pid), False)
-        self.assertIs(proj._pid_running(os.getpid()), True)
+        # A holder that crashes leaves no lock: the operating system releases it with the process.
+        crash = ("import os, sys; sys.path.insert(0, sys.argv[1]); from mswlib import project as p\n"
+                 "with p.mutation_lock(sys.argv[2], 'intake'):\n    os._exit(3)")
+        holder = subprocess.run([sys.executable, "-c", crash, str(SCRIPTS), str(self.root)],
+                                capture_output=True, text=True)
+        self.assertEqual(holder.returncode, 3, holder.stderr)
+        self.assertIsNone(proj.lock_state(self.root))
+        self.assertTrue((self.root / proj.MUTATION_LOCK).is_file())
+        self.run_ok("outstanding", "add", "--text", "after the crash")
 
 
 class OutstandingTests(ProjectCase):
