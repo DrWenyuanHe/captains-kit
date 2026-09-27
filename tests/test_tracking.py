@@ -3,6 +3,7 @@
 import copy
 import io
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -15,6 +16,7 @@ from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 from check import check_repository
 from registry import REGISTRY, content_hash, read_registry, tracking_errors, validate_registry
+import registry
 import skills
 from install import install, validate_invocation, UNSLOP_GUARD
 
@@ -24,6 +26,14 @@ class TrackingTests(unittest.TestCase):
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)
         self.root = Path(self.temporary.name).resolve()
+        # All fixture and production Git subprocesses inherit this isolation.
+        # Individual tests can still override GIT_CONFIG_COUNT for autocrlf checks.
+        git_env = {key: value for key, value in os.environ.items() if not key.startswith("GIT_")}
+        git_env.update(GIT_CONFIG_NOSYSTEM="1", GIT_CONFIG_GLOBAL=os.devnull,
+                       GIT_TERMINAL_PROMPT="0")
+        environment_patch = patch.dict(os.environ, git_env, clear=True)
+        environment_patch.start()
+        self.addCleanup(environment_patch.stop)
         (self.root / "skills").mkdir()
         self.upstream = self.root / "upstream"
         self.upstream.mkdir()
@@ -73,6 +83,86 @@ class TrackingTests(unittest.TestCase):
         self.assertIsNone(entry["last_updated_at"])
         self.assertEqual((self.local / "upstream-licenses" / "LICENSE").read_bytes(), (self.upstream / "LICENSE").read_bytes())
         self.assertEqual(check_repository(self.root), [])
+        self.assertEqual(list((self.root / ".captains-kit-cache").iterdir()), [])
+
+    def test_contending_operation_preserves_the_owners_lock(self):
+        with skills.workspace(self.root) as operation:
+            lock = operation.parent / "operation.lock"
+            before = lock.read_bytes()
+            with self.assertRaisesRegex(ValueError, "Another skill operation"):
+                with skills.workspace(self.root):
+                    self.fail("A contending operation acquired the lock")
+            self.assertEqual(lock.read_bytes(), before)
+            self.assertTrue(operation.is_dir())
+        self.assertEqual(list((self.root / ".captains-kit-cache").iterdir()), [])
+
+    def test_operation_exception_cleans_up_and_allows_the_next_operation(self):
+        with self.assertRaisesRegex(RuntimeError, "interrupted"):
+            with skills.workspace(self.root) as operation:
+                (operation / "partial").write_text("partial download", encoding="utf-8")
+                raise RuntimeError("interrupted")
+        self.assertEqual(list((self.root / ".captains-kit-cache").iterdir()), [])
+        with skills.workspace(self.root) as operation:
+            self.assertTrue(operation.is_dir())
+
+    def test_failed_atomic_registry_replace_preserves_bytes_and_cleans_temporary(self):
+        self.import_example()
+        before = (self.root / REGISTRY).read_bytes()
+        data = read_registry(self.root)
+        registry.append_change(data["skills"]["example"], "edited", "1" * 64, "Test failed save")
+        with patch.object(registry.os, "replace", side_effect=OSError("Disk unavailable")):
+            with self.assertRaisesRegex(OSError, "Disk unavailable"):
+                registry.write_registry(self.root, data)
+        self.assertEqual((self.root / REGISTRY).read_bytes(), before)
+        self.assertEqual(list(self.root.glob(".registry-*.tmp")), [])
+
+    def test_check_continues_after_one_source_fails(self):
+        self.import_example()
+        other = self.upstream / "skills" / "other"
+        shutil.copytree(self.source, other)
+        entrypoint = other / "SKILL.md"
+        entrypoint.write_text(entrypoint.read_text(encoding="utf-8").replace("name: example", "name: other"),
+                              encoding="utf-8")
+        self.commit()
+        skills.import_skill(self.root, "other", "./upstream", "skills/other", "main")
+        skills.check_updates(self.root)
+        previous = read_registry(self.root)
+        before = {name: content_hash(self.root / "skills" / name) for name in ("example", "other")}
+        snapshot = skills.snapshot
+
+        def fetch(root, temporary, name, source, ref=None):
+            if name == "example":
+                raise OSError("Source unavailable")
+            return snapshot(root, temporary, name, source, ref)
+
+        with patch.object(skills, "snapshot", side_effect=fetch):
+            results = skills.check_updates(self.root, ["example", "other"])
+        self.assertEqual([(row["skill"], row["status"]) for row in results],
+                         [("example", "error"), ("other", "current")])
+        entries = read_registry(self.root)["skills"]
+        self.assertEqual(entries["example"]["last_checked_at"], previous["skills"]["example"]["last_checked_at"])
+        self.assertEqual(entries["example"]["history"][-1]["event"], "check_failed")
+        self.assertEqual(entries["other"]["history"][-1]["event"], "checked")
+        self.assertEqual({name: content_hash(self.root / "skills" / name) for name in before}, before)
+        self.assertEqual(tracking_errors(self.root), [])
+
+    def test_update_rejects_a_snapshot_different_from_the_reviewed_checksum(self):
+        self.import_example()
+        commit = self.change_upstream()
+        skills.check_updates(self.root)
+        before_registry = (self.root / REGISTRY).read_bytes()
+        before_files = content_hash(self.local)
+        snapshot = skills.snapshot
+
+        def changed_snapshot(*args, **kwargs):
+            candidate, source = snapshot(*args, **kwargs)
+            return candidate, {**source, "sha256": "0" * 64}
+
+        with patch.object(skills, "snapshot", side_effect=changed_snapshot):
+            with self.assertRaisesRegex(ValueError, "does not match the reviewed update"):
+                skills.update_skill(self.root, "example", commit)
+        self.assertEqual((self.root / REGISTRY).read_bytes(), before_registry)
+        self.assertEqual(content_hash(self.local), before_files)
         self.assertEqual(list((self.root / ".captains-kit-cache").iterdir()), [])
 
     def test_import_is_stable_across_git_autocrlf_settings(self):

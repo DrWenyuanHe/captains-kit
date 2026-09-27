@@ -28,6 +28,7 @@ configuration, setup scripts and project-specific decisions.
 | [grilling](skills/grilling/SKILL.md) | Stress-test a plan or decision through rounds of numbered questions with recommended answers. | Automatic selection allowed, or explicit invocation. | [Upstream source](https://github.com/mattpocock/skills/tree/main/skills/productivity/grilling) |
 | [domain-modeling](skills/domain-modeling/SKILL.md) | Build and sharpen a project's glossary in `CONTEXT.md` and record ADRs. | Automatic selection allowed, or explicit invocation. | [Upstream source](https://github.com/mattpocock/skills/tree/main/skills/engineering/domain-modeling) |
 | [install-skills](skills/install-skills/SKILL.md) | Install or update skills for Codex and Claude Code with staged comparisons, provenance, backups and verification. | Automatic selection allowed; follows the requested installation scope. | [Host guidance](skills/install-skills/references/hosts.md), [receipts and recovery](skills/install-skills/references/receipts-and-recovery.md) |
+| [install-tools](skills/install-tools/SKILL.md) | Check, install, update or roll back the Python packages agents import (Pillow, OpenCV and NumPy by default) at global scope, verifying that installed packages that use them still import. | Automatic selection allowed; changes only the requested packages and interpreter. | [Scope and recovery](skills/install-tools/references/scope-and-recovery.md), [tool manifest](skills/install-tools/assets/tools.json) |
 
 `unslop` is a customized import. Use `$unslop` in Codex, `/unslop` in Claude Code,
 or explicitly ask to "use unslop" after installing it. Ordinary writing requests
@@ -76,6 +77,23 @@ at user scope and keep an installation record` for a recorded installation acros
 both clients. Use `/install-skills` in Claude Code. This workflow stages and compares
 copies, preserves invocation policies, and keeps receipts and backups privately
 with the destination. The repository installer below remains project-local.
+
+`install-tools` manages shared Python packages rather than skill files. Its
+[manifest](skills/install-tools/assets/tools.json) lists each package, the module
+agents import and a smoke test. From the skill folder:
+
+- `python scripts/tools.py status` checks imports, scope and conflicts read-only.
+- `python scripts/tools.py update --dry-run` previews the newest compatible versions
+  within each current major version, including limits that installed packages such
+  as numba place on NumPy. `--with numba` moves such a package too; `--allow-major`
+  permits a confirmed major upgrade.
+- `python scripts/tools.py install` or `update` applies the plan outside any virtual
+  environment and records it under `~/.agent-tools/records/`. It rolls back if
+  `pip check` reports a new conflict or an installed package that uses a changed one
+  stops importing. `rollback <record folder>` undoes it later.
+
+Use `$install-tools` in Codex or `/install-tools` in Claude Code. Install the skill
+itself for each client with `install-skills`, as with other library skills.
 
 The [upstream source index](docs/upstream-sources.md) links the reviewed gstack
 snapshot, current sources and changelog for occasional revisits. Each adapted

@@ -358,6 +358,39 @@ class FakeLibreOfficeTests(TemporaryFolderTest):
         self.assertTrue((out / "rejected view.docx").is_file())
         self.assertEqual(record["source"]["name"], "fixture.docx")
 
+    def test_timeout_stops_the_conversion_and_is_recorded(self):
+        launcher, environment = self.fake("")
+        out = self.tmp / "slow"
+        proc = mock.Mock(pid=12345)
+        proc.wait.side_effect = [subprocess.TimeoutExpired("fake conversion", 1), 0]
+        # Exercise the host's tree-termination branch without starting or killing a process.
+        with environment, mock.patch.object(proof, "soffice_version", return_value="FakeOffice 1.0"), \
+                mock.patch.object(proof.subprocess, "Popen", return_value=proc) as popen, \
+                mock.patch.object(proof.subprocess, "run", return_value=subprocess.CompletedProcess([], 0, "terminated", "")) as kill, \
+                mock.patch.object(proof.os, "killpg", create=True) as killpg:
+            code, _, err = run_command(["proof", str(self.fixture()), "--out", str(out), "--view", "as-is",
+                                        "--soffice", str(launcher), "--rasterizer", "none",
+                                        "--profile-dir", str(self.tmp / "fresh profile"), "--timeout", "1"])
+        proc.kill.assert_called_once_with()
+        self.assertEqual(proc.wait.call_args_list, [mock.call(timeout=1), mock.call(timeout=30)])
+        popen.assert_called_once()
+        if os.name == "nt":
+            self.assertEqual(kill.call_args.args[0], ["taskkill", "/PID", "12345", "/T", "/F"])
+            killpg.assert_not_called()
+        else:
+            killpg.assert_called_once_with(12345, proof.signal.SIGKILL)
+            kill.assert_not_called()
+        record = json.loads((out / "proof.json").read_text(encoding="utf-8"))
+        self.assertEqual(code, 1)
+        self.assertEqual(record["status"], "timeout")
+        self.assertEqual(len(record["attempts"]), 1)
+        self.assertEqual(record["attempts"][0]["status"], "timeout")
+        self.assertIn("did not finish within 1 s", err)
+        self.assertTrue(any("did not finish" in error for error in record["errors"]))
+        self.assertIsNone(record["pdf"])
+        self.assertTrue((out / "soffice_stderr.txt").is_file())
+        self.assertTrue((self.tmp / "fresh profile").is_dir())
+
     def run_in_project(self, launcher, environment, *extra):
         """A proof of a released file into a pass folder of a synthetic project, default profile."""
         project = self.tmp / "project"
@@ -457,18 +490,6 @@ class LibreOfficeProofTests(TemporaryFolderTest):
         code, _, err = run_command(["proof", str(built), "--out", str(out), "--profile-dir", str(self.profile)])
         self.assertEqual(code, 2)
         self.assertEqual(sorted(p.name for p in out.iterdir()), before)
-
-    def test_timeout_stops_the_conversion_and_is_recorded(self):
-        out = self.tmp / "slow"
-        code, _, err = run_command(["proof", str(self.fixture()), "--out", str(out), "--view", "as-is",
-                                    "--profile-dir", str(self.tmp / "fresh profile"), "--timeout", "1"])
-        record = json.loads((out / "proof.json").read_text(encoding="utf-8"))
-        if record["status"] == "ok":
-            self.skipTest("LibreOffice finished within one second; the timeout path was not exercised")
-        self.assertEqual(code, 1)
-        self.assertEqual(record["status"], "timeout")
-        self.assertIn("did not finish", err)
-        self.assertTrue((self.tmp / "fresh profile").is_dir())
 
 
 class SymbolTextTests(unittest.TestCase):

@@ -314,6 +314,54 @@
       "origin": "local",
       "source": null
     },
+    "install-tools": {
+      "added_at": "2026-09-24T19:09:09.664245Z",
+      "content_sha256": "e34911fe8f577c94efbf5f8477f98c0abab4d30f06d14d19b72b509c3a1e0f9b",
+      "first_imported_at": null,
+      "history": [
+        {
+          "at": "2026-09-24T19:09:09.664245Z",
+          "content_sha256": "6398b6101cec55c446746bc41acdc20cc44929c57d7b0fc02e6930bd68d7efa5",
+          "event": "registered"
+        },
+        {
+          "at": "2026-09-24T19:15:23.107125Z",
+          "content_sha256": "013a7df8c7edc19957ec0a2b72381bad3fbc84d0b5c30703c28a265cbe0670ef",
+          "event": "edited",
+          "note": "Report restored versions after automatic rollback and keep piped output in order"
+        },
+        {
+          "at": "2026-09-24T19:21:07.840879Z",
+          "content_sha256": "8d4cf9996219fb042e0d8fad1960cf6bd48ef68f716c0138d8a3234c60685024",
+          "event": "edited",
+          "note": "Hold modules with several installed providers and flag major version changes in plans"
+        },
+        {
+          "at": "2026-09-24T19:38:38.889368Z",
+          "content_sha256": "721be26a4499485199119e38986ea83892a07746094dc43165ad91b05ad0544e",
+          "event": "edited",
+          "note": "Update lockstep providers together, stay within major versions by default, add --with, and import-check dependents before and after changes"
+        },
+        {
+          "at": "2026-09-27T23:43:14.164881Z",
+          "content_sha256": "a6fa1182cc82302dccd3684ceb9062326bd24a2eb2c4d5cfcbd0036d1a5b97e1",
+          "event": "edited",
+          "note": "Keep failed rollback records retryable and document recovery after regression tests exposed premature completion."
+        },
+        {
+          "at": "2026-09-27T23:43:35.076282Z",
+          "content_sha256": "e34911fe8f577c94efbf5f8477f98c0abab4d30f06d14d19b72b509c3a1e0f9b",
+          "event": "edited",
+          "note": "Document completion status and version-drift review when retrying failed rollback."
+        }
+      ],
+      "last_check": null,
+      "last_check_attempt_at": null,
+      "last_checked_at": null,
+      "last_updated_at": "2026-09-27T23:43:35.076282Z",
+      "origin": "local",
+      "source": null
+    },
     "nature-figure": {
       "added_at": "2026-09-18T18:53:26.255587Z",
       "content_sha256": "4b5e20322dac047e5bd8ca76aae203454175f5e2449b1bc0f809345285773bb7",
