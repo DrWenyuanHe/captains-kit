@@ -228,6 +228,9 @@ subprocess timeout and run without LibreOffice.
 CI runs all three commands on Ubuntu with Python 3.10 and 3.12, and Windows with
 Python 3.12. Root discovery does not include the nested Nature Figure safety
 suite, so keep its separate discovery command in local verification and CI.
+Its numerical helper tests require NumPy (`numpy>=1.26,<3`); CI installs this
+runtime dependency before running that suite. For local verification, use an
+interpreter with NumPy installed or install it in a disposable virtual environment.
 
 Optional integration checks report explicit skips when their prerequisites are
 unavailable:
