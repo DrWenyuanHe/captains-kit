@@ -443,7 +443,7 @@
     },
     "scientific-manuscript": {
       "added_at": "2026-09-25T07:11:50.336330Z",
-      "content_sha256": "10eda1952ae9e663d6f9febaf8c2c81ece1a790199c777cc1fe3cabbab880f32",
+      "content_sha256": "b00e628e4d4e92588aa9d8630e4675da4ff51f212c71a78092c2b48cda8cc7a0",
       "first_imported_at": null,
       "history": [
         {
@@ -474,12 +474,18 @@
           "content_sha256": "10eda1952ae9e663d6f9febaf8c2c81ece1a790199c777cc1fe3cabbab880f32",
           "event": "edited",
           "note": "Keep the harness out of code repositories: project discovery stops at a repository root, and the description and start rules limit the skill to manuscript projects."
+        },
+        {
+          "at": "2026-09-28T00:04:51.554928Z",
+          "content_sha256": "b00e628e4d4e92588aa9d8630e4675da4ff51f212c71a78092c2b48cda8cc7a0",
+          "event": "edited",
+          "note": "Scrub mixed Windows long and 8.3 path spellings from records; cover path aliases and canonical config lookup in tests."
         }
       ],
       "last_check": null,
       "last_check_attempt_at": null,
       "last_checked_at": null,
-      "last_updated_at": "2026-09-25T15:05:48.062349Z",
+      "last_updated_at": "2026-09-28T00:04:51.554928Z",
       "origin": "local",
       "source": null
     },

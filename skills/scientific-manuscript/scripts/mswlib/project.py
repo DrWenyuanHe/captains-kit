@@ -861,13 +861,36 @@ def _adopted_root(args) -> Path | None:
 ABSOLUTE_RE = re.compile(r"^(?:[A-Za-z]:[\\/]|\\\\|/)")
 
 
+def _short_path(folder) -> str | None:
+    """The existing Windows 8.3 spelling, if the filesystem provides one."""
+    if os.name != "nt":
+        return None
+    import ctypes
+    from ctypes import wintypes
+    kernel = ctypes.WinDLL("kernel32", use_last_error=True)
+    function = kernel.GetShortPathNameW
+    function.argtypes = [wintypes.LPCWSTR, wintypes.LPWSTR, wintypes.DWORD]
+    function.restype = wintypes.DWORD
+    buffer = ctypes.create_unicode_buffer(32768)
+    length = function(str(_fsp(folder)), buffer, len(buffer))
+    return str(_plain(buffer.value)) if 0 < length < len(buffer) else None
+
+
 def _folder_pattern(folder) -> re.Pattern:
     """A folder path inside text: any separator (`\\`, `/`, or `\\\\` as repr() writes it), with an
     optional extended-length prefix; case-insensitive on Windows."""
     parts = [part for part in re.split(r"[\\/]+", str(folder).rstrip("\\/"))]
     separator = r"(?:\\\\|\\|/)"
     prefix = r"(?:(?:\\\\|\\){2}\?(?:\\\\|\\))?"
-    body = separator.join(re.escape(part) for part in parts)
+    short = _short_path(folder)
+    aliases = re.split(r"[\\/]+", short.rstrip("\\/")) if short else parts
+    if len(aliases) != len(parts):
+        aliases = parts
+    # Windows accepts mixed spellings: a short user directory with long child names.
+    body = separator.join(
+        re.escape(part) if part == alias else f"(?:{re.escape(part)}|{re.escape(alias)})"
+        for part, alias in zip(parts, aliases)
+    )
     # ... and not a longer folder name that merely starts the same way
     return re.compile(prefix + body + r"(?![\w-])", re.IGNORECASE if os.name == "nt" else 0)
 

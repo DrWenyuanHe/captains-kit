@@ -2044,6 +2044,19 @@ class RetargetTests(ProjectCase):
 class MachinePathTests(ProjectCase):
     """Versioned records (indexes, ledger, generated files) never hold this machine's paths."""
 
+    def test_folder_pattern_accepts_mixed_short_and_long_names(self):
+        with mock.patch.object(proj, "_short_path", return_value="C:/Users/LONGNA~1/EXAMPL~1"):
+            pattern = proj._folder_pattern("C:/Users/Long Name/Example project")
+        for user in ("Long Name", "LONGNA~1"):
+            for project in ("Example project", "EXAMPL~1"):
+                for separator in ("/", "\\", "\\\\"):
+                    path = separator.join(("C:", "Users", user, project))
+                    with self.subTest(path=path):
+                        self.assertEqual(pattern.sub(".", f"cannot open '{path}{separator}file.txt'"),
+                                         f"cannot open '.{separator}file.txt'")
+        self.assertEqual(pattern.sub(".", "C:/Users/Long Name/Example project-other/file"),
+                         "C:/Users/Long Name/Example project-other/file")
+
     def assert_no_machine_path(self, root: Path):
         markers = set()
         for folder in (self.base, Path.home()):

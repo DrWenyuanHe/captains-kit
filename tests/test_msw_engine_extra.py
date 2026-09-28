@@ -173,7 +173,7 @@ class MoreEngineTests(unittest.TestCase):
             (project / "04_Analysis" / "tool" / "src").mkdir()
             (project / "manuscript.json").write_text("{}", encoding="utf-8")
             code = project / "04_Analysis" / "tool" / "src"
-            self.assertEqual(find_config(project / "04_Analysis"), project / "manuscript.json")
+            self.assertEqual(find_config(project / "04_Analysis"), (project / "manuscript.json").resolve())
             self.assertIsNone(find_config(code))           # the repository root ends the search
             before = sorted(p.relative_to(folder).as_posix() for p in Path(folder).rglob("*"))
             err = io.StringIO()
