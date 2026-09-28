@@ -314,6 +314,54 @@
       "origin": "local",
       "source": null
     },
+    "install-tools": {
+      "added_at": "2026-09-24T19:09:09.664245Z",
+      "content_sha256": "e34911fe8f577c94efbf5f8477f98c0abab4d30f06d14d19b72b509c3a1e0f9b",
+      "first_imported_at": null,
+      "history": [
+        {
+          "at": "2026-09-24T19:09:09.664245Z",
+          "content_sha256": "6398b6101cec55c446746bc41acdc20cc44929c57d7b0fc02e6930bd68d7efa5",
+          "event": "registered"
+        },
+        {
+          "at": "2026-09-24T19:15:23.107125Z",
+          "content_sha256": "013a7df8c7edc19957ec0a2b72381bad3fbc84d0b5c30703c28a265cbe0670ef",
+          "event": "edited",
+          "note": "Report restored versions after automatic rollback and keep piped output in order"
+        },
+        {
+          "at": "2026-09-24T19:21:07.840879Z",
+          "content_sha256": "8d4cf9996219fb042e0d8fad1960cf6bd48ef68f716c0138d8a3234c60685024",
+          "event": "edited",
+          "note": "Hold modules with several installed providers and flag major version changes in plans"
+        },
+        {
+          "at": "2026-09-24T19:38:38.889368Z",
+          "content_sha256": "721be26a4499485199119e38986ea83892a07746094dc43165ad91b05ad0544e",
+          "event": "edited",
+          "note": "Update lockstep providers together, stay within major versions by default, add --with, and import-check dependents before and after changes"
+        },
+        {
+          "at": "2026-09-27T23:43:14.164881Z",
+          "content_sha256": "a6fa1182cc82302dccd3684ceb9062326bd24a2eb2c4d5cfcbd0036d1a5b97e1",
+          "event": "edited",
+          "note": "Keep failed rollback records retryable and document recovery after regression tests exposed premature completion."
+        },
+        {
+          "at": "2026-09-27T23:43:35.076282Z",
+          "content_sha256": "e34911fe8f577c94efbf5f8477f98c0abab4d30f06d14d19b72b509c3a1e0f9b",
+          "event": "edited",
+          "note": "Document completion status and version-drift review when retrying failed rollback."
+        }
+      ],
+      "last_check": null,
+      "last_check_attempt_at": null,
+      "last_checked_at": null,
+      "last_updated_at": "2026-09-27T23:43:35.076282Z",
+      "origin": "local",
+      "source": null
+    },
     "nature-figure": {
       "added_at": "2026-09-18T18:53:26.255587Z",
       "content_sha256": "4b5e20322dac047e5bd8ca76aae203454175f5e2449b1bc0f809345285773bb7",
@@ -390,6 +438,54 @@
       "last_check_attempt_at": null,
       "last_checked_at": null,
       "last_updated_at": "2026-09-16T16:29:21.129660Z",
+      "origin": "local",
+      "source": null
+    },
+    "scientific-manuscript": {
+      "added_at": "2026-09-25T07:11:50.336330Z",
+      "content_sha256": "b00e628e4d4e92588aa9d8630e4675da4ff51f212c71a78092c2b48cda8cc7a0",
+      "first_imported_at": null,
+      "history": [
+        {
+          "at": "2026-09-25T07:11:50.336330Z",
+          "content_sha256": "ea7be41e9ddf92b6b22df5881a34cae0656b8b7b33e46d54e4b6c62b28578953",
+          "event": "registered"
+        },
+        {
+          "at": "2026-09-25T08:00:27.076596Z",
+          "content_sha256": "0439cef71fcdcc1cdc424872291dc69926a736b3b8fdc438fbdccab905f21b44",
+          "event": "edited",
+          "note": "Fix the independent Codex review findings: reject-view property and picture checks, dangling relationship ids, reordered values in science_guard, inherited-style unset, vertical alignment swaps, no-break-space merges, empty rewrites, structured-abstract word counts, empty comments parts, track-revisions switch; resumable intake, author-save and retarget; project mutation lock; relative journal-profile and drift paths."
+        },
+        {
+          "at": "2026-09-25T08:15:15.660151Z",
+          "content_sha256": "3eb8053c0861332a997b70a2540213d952aa439ac14f30daad0d29eb26bf2633",
+          "event": "edited",
+          "note": "Close the residual review items: resume a first intake without --as-version, compare whole equations in the rejected view, keep a superscript set over a style's subscript, and add track changes to an empty settings part."
+        },
+        {
+          "at": "2026-09-25T14:38:08.023582Z",
+          "content_sha256": "94f1c5b2d5e8d8bf47e12e86670f5fcad036a99d3bbb4e2e2e599f1cac5792e0",
+          "event": "edited",
+          "note": "Replace the deletable mutation lock file with an operating-system lock on a file that is never deleted, so projects that forbid deleting any file are respected and a crashed command leaves no lock."
+        },
+        {
+          "at": "2026-09-25T15:05:48.062349Z",
+          "content_sha256": "10eda1952ae9e663d6f9febaf8c2c81ece1a790199c777cc1fe3cabbab880f32",
+          "event": "edited",
+          "note": "Keep the harness out of code repositories: project discovery stops at a repository root, and the description and start rules limit the skill to manuscript projects."
+        },
+        {
+          "at": "2026-09-28T00:04:51.554928Z",
+          "content_sha256": "b00e628e4d4e92588aa9d8630e4675da4ff51f212c71a78092c2b48cda8cc7a0",
+          "event": "edited",
+          "note": "Scrub mixed Windows long and 8.3 path spellings from records; cover path aliases and canonical config lookup in tests."
+        }
+      ],
+      "last_check": null,
+      "last_check_attempt_at": null,
+      "last_checked_at": null,
+      "last_updated_at": "2026-09-28T00:04:51.554928Z",
       "origin": "local",
       "source": null
     },

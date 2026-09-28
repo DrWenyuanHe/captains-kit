@@ -1,0 +1,34 @@
+# Ignored means "not versioned", never "deleted". Nothing in this project is deleted.
+
+# Per-pass build scratch: the released copy in 01_Manuscripts/Versions/ has the same SHA-256.
+90_Agent_Work/passes/*/build*/
+90_Agent_Work/passes/*/qa/
+90_Agent_Work/passes/*/proofs_work/
+
+# Proof tool records hold this machine's paths; the proof PDFs themselves stay versioned.
+90_Agent_Work/passes/*/proofs/**/*.json
+**/soffice_*.txt
+
+# Held by an msw command while it changes the project; removed when it finishes.
+06_Project_Docs/.msw_mutation.lock
+
+# Rendering profiles and caches (older projects kept a LibreOffice profile in render_profiles/)
+90_Agent_Work/render_profiles/
+**/lo_profile*/
+__pycache__/
+*.pyc
+.venv/
+venv/
+node_modules/
+
+# Word, LibreOffice and operating-system noise
+~$*
+~WRL*.tmp
+.~lock.*#
+*.tmp
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Local agent session state
+.claude/settings.local.json

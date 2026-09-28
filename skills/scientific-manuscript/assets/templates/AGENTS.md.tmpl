@@ -1,0 +1,133 @@
+# Agent rules for this manuscript project
+
+Project: {title} ({kind_label}). Author: {author_name}, file initials {initials}. Target journal:
+`target_journal` in `PROJECT_INDEX.json`; its short code for file names is `venue` in
+`manuscript.json` ({venue} when the project was set up; `msw.py retarget` changes both).
+Tracked changes carry the author name **{revision_name}** (`author.revision_name` in
+`manuscript.json`) and no other name; change it only when the author asks. Spelling: {spelling}.
+
+These rules override general habits. The tools are the scientific-manuscript skill's `msw.py`:
+`msw.py <command>` below means `python {msw} <command>`, run from this folder
+({msw_note}; `--help` lists the commands). `msw.py status` shows the current file, author saves,
+lock files, passes in flight and open items.
+
+## Never delete, never overwrite
+
+- Nothing in this folder is ever deleted. No `rm`, `del`, `Remove-Item`, `rmdir`, `unlink`,
+  "move" done as copy-then-delete, or emptying a recycle bin.
+- Never save over manuscripts, data, figures or records: Word files, anything in
+  `01_Manuscripts/` and `03_Data/`, figure outputs and build scripts, proofs, the indexes and
+  `06_Project_Docs/LEDGER.jsonl`. Tools write new files and refuse existing ones; the indexes and
+  the generated blocks in `README.md` and `STATUS.md` change only through `msw.py`.
+- The working files the workflow asks you to fill in are edited in place: the pass folder's
+  `edits.json`, `VNN_CHANGES.md` and the `figures_changed` entry of its `pass.json` (until the
+  pass is released), the configuration in `manuscript.json`, `06_Project_Docs/DECISIONS.md` (add
+  entries; correct an old one below it, never rewrite it), the journal profile in
+  `05_References/Journal_Guidelines/`, and, after a retarget, the lines of this file and of
+  `README.md` that `msw.py retarget` reports as still naming the old journal. Once released, their
+  copies in `01_Manuscripts/Versions/VNN/` are records like any other.
+- To take a file out of view, move it: `msw.py archive plan --reason <Name> <paths>`, show the plan,
+  then `msw.py archive apply ...`. Files go to `99_Archive/YYYY-MM-DD/<Name>/` under their original
+  relative path, by rename, with the SHA-256 before and after recorded in
+  `06_Project_Docs/LEDGER.jsonl`. Anything an index names cannot be archived.
+- Never run `git clean`, `git checkout` (any form, including a branch, a commit or a path),
+  `git switch`, `git restore`, `git reset --hard`, `git stash` or `git rm` here: they delete or
+  overwrite working files. To move a branch pointer without touching files use `git branch -f`.
+  "Ignored by git" means "not versioned", never "deleted".
+- New versions only. Every change produces a new file with the next version number; released
+  files, incoming files and the author's own saves are never edited or replaced. Tools write to new
+  files or new folders and refuse existing ones.
+- Records keep no machine paths: the indexes and the ledger hold paths relative to this folder, and
+  a file taken in from elsewhere is recorded by its name and SHA-256 only.
+
+## Word files and EndNote
+
+- Change a manuscript only with `msw.py build <source> <edits.json> --out <new file>`. It writes
+  every change as a minimal tracked change under the name above and gates the result. Never edit
+  `document.xml` by hand or rewrite it with a general XML or docx library.
+- EndNote citation fields, the bibliography, pictures and other fields are atoms: text may change
+  around them, never inside them, and a citation stays in its clause.
+- Do not refresh fields. The author refreshes EndNote, then the table of contents, then page
+  numbers in Word, and says so when done.
+- Writing fixes are tracked edits. Questions about the science, numbers, statistics or the
+  direction of a claim follow `policy.science_changes` in `manuscript.json`: `comments` (the
+  default) makes them Word comments for the author; `tracked_for_review` allows tracked edits the
+  author reviews. Numbers change only with the author's approval or a recomputation from the data.
+- Never drive the author's running Word. A `~$` lock file (Word) or a `.~lock.<name>#` file
+  (LibreOffice) beside a document means it is open: do not move it or build from it until the
+  author closes it.
+- When the author saves the package's current copy in Word, register it with
+  `msw.py author-save <file>`. The saved copy becomes the baseline for the next pass. A changed
+  baseline or other older copy is not the current file: keep it with
+  `msw.py intake <file> --role incoming --as-version <its version>`.
+- A tracked copy returned by a supervisor or co-author that the next pass builds on:
+  `msw.py intake "<returned file>" --role author_saved --state "<name> comments" --set-current`.
+  It keeps the version number, carries the sender in its file name and records `returned_by`.
+  Files kept only for reference go in with `--role incoming`.
+
+## Where files live
+
+| Kind of file | Location |
+| --- | --- |
+| Configuration (author name, venue, naming, journal profile, science-change policy) | `manuscript.json` |
+| What is current (one source of truth) | `PROJECT_INDEX.json` |
+| The file to open in Word now: current version and its baseline (listed in `PACKAGE_MANIFEST.json`) | `01_Manuscripts/00_CURRENT_DELIVERABLE/` |
+| Released versions, the author's saves, change notes, proofs (immutable) | `01_Manuscripts/Versions/VNN/` |
+| Files received from the author, co-authors or reviewers, never edited | `01_Manuscripts/Incoming/` |
+| Version history | `01_Manuscripts/VERSION_INDEX.json` (and the generated `.md`) |
+| Figures: one folder per figure, scripts, source data, versioned outputs | `02_Figures/` with `FIGURE_INDEX.json` |
+| Data as received / derived tables | `03_Data/Original_Source/`, `03_Data/Derived/` |
+| Analysis code and outputs | `04_Analysis/` |
+| EndNote library, journal guidelines, evidence for claims | `05_References/EndNote/`, `Journal_Guidelines/`, `Evidence/` |
+| Status, decisions, the append-only ledger, workflows | `06_Project_Docs/` |
+| One folder per pass (edits, builds, QA, proofs, review) | `90_Agent_Work/passes/VNN_<slug>/` |
+| QA, figure QA, scratch | `90_Agent_Work/` |
+| Archived (moved, never deleted) files | `99_Archive/YYYY-MM-DD/<Reason>/` |
+
+## Versions and names
+
+- File names: `YYYY-MM-DD {initials} <venue> VNN <slug> <state>.docx`, where `<venue>` is the
+  venue code in `manuscript.json`. States: `baseline` (the project's first file), `tracked
+  verified` (released), `author accepted` or `author saved` (the author's own saves), `<name>
+  comments` (a supervisor's or co-author's return), `accepted` (clean copy). A build inside its pass
+  folder has the short name `VNN tracked.docx`; `release` gives the released copy its full name.
+- Version numbers are integers, never reused, and keep counting across journal retargets
+  (`msw.py retarget --venue <code> --target-journal "<name>" --journal-profile <profile>`). Claim
+  one with `msw.py pass new --slug "<two to six words>"`; parallel sessions get different numbers.
+- Before editing, run `msw.py status` and build on the newest file, which is the author's latest
+  save when there is one.
+- A command that stops part-way (a locked file, a crash) keeps a pending event in the ledger.
+  `msw.py status` lists it; run the same command again and it finishes from that event.
+
+## Release ritual (one pass makes one version)
+
+1. `msw.py status`: note the current file; register any author save first.
+2. `msw.py pass new --slug "<words>"`: claims VNN and creates the pass folder with `pass.json`,
+   `edits.json` and `VNN_CHANGES.md`. Keep slugs short: file paths on Windows stop at 260
+   characters.
+3. Write the edits, then run the build command the pass printed (it writes
+   `build01/VNN tracked.docx`). The build gates itself and writes only on PASS.
+4. Render the accepted view of the build you will release into a new folder under the pass
+   `proofs/` folder (`msw.py proof <build> --out <pass folder>/proofs/p1`) and look at it. A rebuilt
+   pass needs a new proof: release refuses a proof whose `proof.json` names another build. Run
+   native Word QA when available.
+5. Independent review: a separate reviewer reads the artifacts themselves (the docx, its accepted
+   and rejected views, the proof), not a summary. Fix and rebuild on FAIL.
+6. Complete `VNN_CHANGES.md`: source, each change, Verification, open items, Not done. Record
+   items that stay open across versions with `msw.py outstanding add --text "..."` and close them
+   with `msw.py outstanding done --id O3`.
+7. `msw.py release plan --pass <pass folder>`, then `msw.py release apply --pass <pass folder>`.
+   It copies the build to `Versions/VNN/` under its full name
+   (`YYYY-MM-DD {initials} <venue> VNN <slug> tracked verified.docx`), updates the
+   current-deliverable folder (current plus baseline; older copies are moved to the archive after
+   a twin check; figure versions named with `--figures`, or promoted and shown by the build, are
+   copied into `Figures/`), the indexes, the generated blocks and the ledger.
+8. Commit with the command `release apply` prints, after the author agrees.
+
+## Before presenting a version
+
+Present a version only after the gate reports PASS, the accepted view has been rendered and looked
+at, and an independent reviewer has read the artifacts. Report: the new file's path; one line of
+check results (gate, citations, reject view equals source, proof, reviewer); the steps left for the
+author in Word (EndNote, then table of contents, then page numbers); numbered decisions, each with a
+recommended option.

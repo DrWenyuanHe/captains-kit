@@ -1,0 +1,175 @@
+{
+  "schema": "journal-profile/1",
+  "notes": {
+    "summary": "Original short summary of the Journal of Endocrinology (JOE) Research-paper rules for the scientific-manuscript skill. It paraphrases the author guidelines and quotes none of them; the live page controls. Re-verify every value before submission.",
+    "journal": "Sources (the journal's author page and its author-guidelines page, both read from a pasted snapshot) with retrieval date and method, plus the conflicts between the journal pages and the joint JOE/JME checklist and how they were resolved. reverify_before_submission stays true because no rule was read from the live pages.",
+    "article_types": "Limits for a Research paper. The word limit excludes references and figure legends; figure and reference maxima are recommendations.",
+    "title_page": "The title page is a separate file and must match the submission-system entries exactly.",
+    "declarations": "The journal's declaration order. Wording guidance is paraphrased; copy the journal's standard sentences from the live page when drafting.",
+    "formatting": "Double spacing everywhere, references and legends included; continuous line numbers; one English variety used consistently.",
+    "references": "Numbered Vancouver style in citation order through EndNote.",
+    "statistics": "Journal expectations for analysis reporting. p_style and p_italic are house choices: the journal gives no rule, and its own examples space the operator.",
+    "figures": "Figure preparation and file rules. max_width_mm is an assumption because the journal publishes none.",
+    "tables": "Tables are separate editable files without internal rules or shading.",
+    "supplementary": "Supplementary items are numbered without an 'S' prefix.",
+    "revision": "Revisions mark changes by highlight or coloured text with a point-by-point response; whether native tracked changes are accepted is unverified.",
+    "policies": "Ethics, consent, data, preprint and AI-disclosure expectations.",
+    "package": "What the submission package contains and its size budget.",
+    "nomenclature": "Gene and protein symbol conventions.",
+    "image_integrity": "Rules for processing images and blots."
+  },
+  "journal": {
+    "id": "joe",
+    "name": "Journal of Endocrinology",
+    "publisher": "Bioscientifica",
+    "sources": [
+      {"kind": "author_guidelines", "url": "https://joe.bioscientifica.com/page/authors", "retrieved": "2026-08-23",
+       "method": "user_paste"},
+      {"kind": "author_guidelines", "url": "https://journals.bioscientifica.com/joe/pages/author-guidelines",
+       "retrieved": "2026-08-23", "method": "user_paste"}
+    ],
+    "reverify_before_submission": true,
+    "conflicts": [
+      {"topic": "citation_style", "a": "joint JOE/JME submission checklist: author-date", "b": "journal author guidelines: numbered Vancouver",
+       "resolved_to": "b", "reason": "the journal-specific page controls; re-verify at submission"},
+      {"topic": "figure_resolution", "a": "checklist: one resolution for every figure", "b": "journal author guidelines: resolution tiers by figure type",
+       "resolved_to": "b", "reason": "the journal-specific page controls; record the tier of each figure"}
+    ]
+  },
+  "article_types": {
+    "research": {
+      "word_limit": {"max": 5000, "excludes": ["references", "figure_legends"], "counting_method": "house",
+                     "severity": "error"},
+      "abstract": {"max_words": 250, "format": "single_paragraph", "forbid": ["abbreviations", "citations"],
+                   "required_elements": ["objective", "methods", "results", "conclusions"]},
+      "title": {"max_chars": 120},
+      "short_title": {"max_chars": 46, "counts_spaces": true},
+      "keywords": {"min": 4, "max": null},
+      "figures": {"recommended_max": 10},
+      "references": {"recommended_max": 60},
+      "sections": ["title_page", "abstract", "introduction", "materials_and_methods", "results", "discussion",
+                   "declarations", "references"]
+    }
+  },
+  "title_page": {
+    "separate_file": true,
+    "items": ["full_title", "authors_full_names", "affiliations_full_addresses", "corresponding_postal_address",
+              "corresponding_email", "short_title", "keywords", "word_count"],
+    "word_count_on_title_page": true,
+    "must_match_submission_system": true
+  },
+  "declarations": {
+    "order": ["declaration_of_interest", "funding", "author_contributions", "acknowledgements", "ai_disclosure"],
+    "templates": {},
+    "guidance": {
+      "declaration_of_interest": "State any conflict of interest; when there is none, use the journal's standard sentence from the live page.",
+      "funding": "Name each funder with its grant number in one funding sentence in the journal's standard form; use the journal's no-funding sentence when there is none.",
+      "author_contributions": "Contributions per author, using CRediT roles.",
+      "acknowledgements": "People and services that helped but are not authors.",
+      "ai_disclosure": "Name any generative AI tool with its version, model and source, and say what it was used for."
+    },
+    "credit_statement": "expected"
+  },
+  "formatting": {
+    "line_spacing": "double",
+    "references_line_spacing": "double",
+    "legends_line_spacing": "double",
+    "line_numbers": "continuous",
+    "language": ["en-GB", "en-US"],
+    "language_rule": "one variety, used consistently",
+    "units": "SI",
+    "percent": "state w/v or v/v",
+    "abbreviations": "define at first use"
+  },
+  "references": {
+    "system": "numbered",
+    "order": "citation",
+    "et_al_after_authors": 3,
+    "endnote_style": "Vancouver",
+    "unpublished": "in_text_only",
+    "web_only": "in_text_with_access_date",
+    "in_press_doi": "when_available"
+  },
+  "statistics": {
+    "p_style": "P = 0.012",
+    "p_italic": true,
+    "require_threshold_statement": true,
+    "experimental_unit_and_allocation": "state",
+    "outlier_removal": "discouraged_justify",
+    "multiple_comparisons": "use a multiple-comparison procedure rather than repeated t tests",
+    "nonparametric_when_appropriate": true,
+    "regression_ci": 95,
+    "prefer_points_over_bars": true,
+    "individual_points": true
+  },
+  "figures": {
+    "numbering": "citation_order",
+    "legend_must_state": ["organism", "group_sizes", "tests", "probability_levels", "symbol_keys"],
+    "panel_labels": {"case": "upper", "position": "top_left"},
+    "font": {"family": ["Arial", "Helvetica"], "min_pt": 5},
+    "max_width_mm": 180,
+    "max_width_assumed": true,
+    "boxes": "forbidden",
+    "scale_bar": {"position": "bottom_right", "size_in_legend": true},
+    "symbols": "closed and open circles, squares and triangles, legible after reduction",
+    "sequences_font": "monospace, homology shaded grey",
+    "files": {
+      "separate_upload": true,
+      "formats_preferred": ["eps", "tiff"],
+      "avoid": ["powerpoint", "word"],
+      "at_final_size": true,
+      "tiers": {"line_graph": {"dpi": 1200}, "greyscale": {"dpi": 600}, "colour": {"dpi": 300, "colour_mode": "CMYK"}},
+      "combined_upload_max_mb": 40,
+      "per_file_max_mb": 10,
+      "per_file_max_mb_is_house_budget": true
+    },
+    "colour_print": "charged"
+  },
+  "tables": {
+    "numbering": "citation_order",
+    "separate_editable_files": true,
+    "title": "one sentence naming the organism",
+    "short_column_heads": true,
+    "abbreviations_in_footnotes": true,
+    "internal_rules": "forbidden",
+    "shading": "forbidden",
+    "colour": "forbidden"
+  },
+  "supplementary": {
+    "cite_as": ["Supplementary Table {n}", "Supplementary Figure {n}"],
+    "number_prefix": "",
+    "upload_as": "Supplemental File for Review",
+    "may_incur_charge": true
+  },
+  "revision": {
+    "markup": "highlight_or_colour",
+    "response_letter": "required",
+    "track_changes_accepted": "unverified"
+  },
+  "policies": {
+    "helsinki": true,
+    "ethics_committee_named": true,
+    "consent_type_stated": true,
+    "cell_line_authentication": true,
+    "data_deposition": "accession numbers for deposited data",
+    "preprint_disclosure": true,
+    "ai_disclosure": "required"
+  },
+  "package": {
+    "title_page": "separate file",
+    "main_text": "editable Word file",
+    "figures": "separate image files",
+    "tables": "separate editable Word files",
+    "cover_letter": "required",
+    "combined_upload_max_mb": 40,
+    "check_generated_pdf": true
+  },
+  "nomenclature": {
+    "gene_symbols": "italic, with species-specific case",
+    "protein_names": "roman"
+  },
+  "image_integrity": {
+    "adjustments": "whole-image only and disclosed; no selective enhancement",
+    "blots": "keep uncropped originals; crops show at least two markers; spliced lanes demarcated"
+  }
+}

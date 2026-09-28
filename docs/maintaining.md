@@ -209,6 +209,7 @@ Humanizer keeps its upstream invocation behavior, including automatic selection.
 ```sh
 python scripts/check.py
 python -m unittest discover -s tests -v
+python -m unittest discover -s skills/nature-figure/tests -v
 ```
 
 The full check includes root documentation and every direct skill folder. A
@@ -219,6 +220,31 @@ destinations. For workflow changes, also exercise the relevant skill on a realis
 task; packaging checks cannot establish that the instructions work well.
 Tracking tests use a disposable Git repository to exercise imports, updates,
 timestamps, failed checks, local customizations and rollback.
+Their Git environment excludes user and system configuration. Install-tools
+transaction tests use synthetic inventories and intercepted subprocesses; they
+never install or remove real packages. Manuscript timeout checks inject a
+subprocess timeout and run without LibreOffice.
+
+CI runs all three commands on Ubuntu with Python 3.10 and 3.12, and Windows with
+Python 3.12. Root discovery does not include the nested Nature Figure safety
+suite, so keep its separate discovery command in local verification and CI.
+Its numerical helper tests require NumPy (`numpy>=1.26,<3`); CI installs this
+runtime dependency before running that suite. For local verification, use an
+interpreter with NumPy installed or install it in a disposable virtual environment.
+
+Optional integration checks report explicit skips when their prerequisites are
+unavailable:
+
+- LibreOffice rendering runs when `soffice` is detected; set `MSW_SOFFICE` to an
+  executable path to select it explicitly.
+- Native Word checks require Windows, Microsoft Word and `MSW_WORD_TESTS=1`.
+- R checks require `Rscript` on PATH or the `RSCRIPT` environment variable. The
+  rendered figure check also needs `ggplot2`, `patchwork` and `jsonlite`.
+- Live PubMed and Crossref checks require `MSW_NETWORK_TESTS=1`. Default reference
+  tests use fixtures and a local HTTP server without contacting those services.
+
+CI does not install these optional applications or enable the live network and
+native Word checks. Symlink tests can also skip when the host cannot create links.
 
 The setup guide's Mermaid sources and SVGs live together in its `assets/diagrams/`
 folder. Keep each pair consistent when changing a diagram.

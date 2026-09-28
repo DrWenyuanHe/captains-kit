@@ -1,0 +1,114 @@
+{
+  "schema": "journal-profile/1",
+  "notes": {
+    "how_to_use": "Copy this file to the path that manuscript.json's journal_profile names (init's default is 05_References/Journal_Guidelines/journal.profile.json) and fill it from the journal's author guidelines in your own words. The profile is merged over the house defaults of mswlib/profile.py key by key: a key that is null or left out keeps the house default, and any other value replaces it. An empty list or empty string, unlike null, is a value that switches that rule off. This template's empty abstract.forbid lets citations into the abstract and its empty declarations.order switches the declaration check off, so fill them or delete them to keep the house rules. Store only original summaries with a source link and retrieval date, never copied guideline text.",
+    "schema": "Always 'journal-profile/1'.",
+    "journal": "Identity and provenance. id: short lower-case name used in file names and reports. sources: one entry per page or file read, with kind (author_guidelines, submission_checklist, article_type_page), url, retrieved (YYYY-MM-DD) and method (live, user_paste, user_file or search_snippet). reverify_before_submission: true when any rule was not read from the live page. conflicts: each disagreement between sources as topic, a, b, resolved_to (a or b) and reason.",
+    "article_types": "Limits per article type; 'research' is used by default (msw.py lint --article-type selects another). word_limit.max with excludes (sections not counted), counting_method (house or strict, see msw.py wordcount) and severity (error, warn or info) for the lint. abstract.max_words, format (single_paragraph or structured), forbid (abbreviations, citations; null keeps the house rule that forbids citations, an empty list forbids nothing) and required_elements. title.max_chars and short_title.max_chars (counts_spaces true or false). keywords.min and keywords.max. figures.recommended_max and references.recommended_max are advisory. sections lists the required sections in order.",
+    "title_page": "separate_file: true when the journal wants the title page as its own file. items: what the title page must contain. must_match_submission_system: true when author data must match the online submission form exactly.",
+    "declarations": "order: declaration keys in the order the journal wants (declaration_of_interest, funding, author_contributions, acknowledgements, data_availability, ai_disclosure, ethics, consent, preprint); the lint finds them as headings or bold-label lines and warns when one is missing or out of order. Null keeps the house order; an empty list switches the check off. templates: the journal's required sentences, filled in by the author from the live page. guidance: paraphrased advice per declaration. credit_statement: expected, required or not_used.",
+    "formatting": "page (letter or a4), font, font_size_pt, line_spacing and references_line_spacing (single, 1.5 or double; the lint checks the reference list against references_line_spacing), line_numbers (continuous; per_page, also written page; per_section, also written section; or none for no line numbers; null keeps the house continuous numbering), language (accepted English varieties such as en-US and en-GB; the lint picks the dominant one among them; null or an empty list falls back to en-US and en-GB), units.",
+    "references": "system (numbered or author_date), order (citation or alphabetical), et_al_after_authors (authors listed before et al.), endnote_style (the EndNote output style name), and rules for unpublished, web-only and in-press sources.",
+    "statistics": "p_style: an example such as 'P = 0.012' (spaced) or 'P=0.012' (unspaced) that also fixes the case of P; p_italic: true or false. Null keeps the house choice (spaced 'P = 0.012', italic P); an empty string makes the lint follow the document's majority instead. q_style, n_style and mean_sd_style are optional examples for q values, sample sizes and mean ± SD; the house sets none of them, so when null or empty the lint follows the document's majority. The remaining keys record the journal's reporting expectations (threshold statement, outliers, multiple comparisons).",
+    "figures": "numbering, legend_must_state, panel_labels (case, position), font (family, min_pt), max_width_mm (number) with max_width_assumed when the journal publishes none, and files (formats, resolution tiers, colour mode, size budgets). Figure production itself belongs to the nature-figure skill.",
+    "tables": "separate_editable_files, title rule, internal_rules and shading (allowed or forbidden), abbreviations_in_footnotes.",
+    "supplementary": "cite_as patterns with {n}, number_prefix ('' or 'S'), upload_as label, charges.",
+    "revision": "markup (track_changes, highlight_or_colour or either), response_letter (required or optional), track_changes_accepted (yes, no or unverified).",
+    "policies": "Ethics, consent, data deposition, preprint and AI-disclosure expectations as short values.",
+    "lint": "Library-specific settings for msw.py lint: universal_abbreviations adds abbreviations that never need a definition in this journal; disabled_rules lists rule ids or prefixes (for example 'nomenclature.' or 'typo.range-dash') to switch off."
+  },
+  "journal": {
+    "id": "",
+    "name": "",
+    "publisher": "",
+    "sources": [
+      {"kind": "author_guidelines", "url": "", "retrieved": "", "method": ""}
+    ],
+    "reverify_before_submission": true,
+    "conflicts": []
+  },
+  "article_types": {
+    "research": {
+      "word_limit": {"max": null, "excludes": ["references", "figure_legends"], "counting_method": "house",
+                     "severity": "warn"},
+      "abstract": {"max_words": null, "format": "single_paragraph", "forbid": [], "required_elements": []},
+      "title": {"max_chars": null},
+      "short_title": {"max_chars": null, "counts_spaces": true},
+      "keywords": {"min": null, "max": null},
+      "figures": {"recommended_max": null},
+      "references": {"recommended_max": null},
+      "sections": []
+    }
+  },
+  "title_page": {
+    "separate_file": false,
+    "items": [],
+    "must_match_submission_system": false
+  },
+  "declarations": {
+    "order": [],
+    "templates": {},
+    "guidance": {},
+    "credit_statement": null
+  },
+  "formatting": {
+    "page": null,
+    "font": null,
+    "font_size_pt": null,
+    "line_spacing": null,
+    "references_line_spacing": null,
+    "line_numbers": null,
+    "language": [],
+    "units": null
+  },
+  "references": {
+    "system": null,
+    "order": null,
+    "et_al_after_authors": null,
+    "endnote_style": null,
+    "unpublished": null,
+    "web_only": null,
+    "in_press_doi": null
+  },
+  "statistics": {
+    "p_style": null,
+    "p_italic": null,
+    "q_style": null,
+    "n_style": null,
+    "mean_sd_style": null,
+    "require_threshold_statement": null,
+    "outlier_removal": null,
+    "multiple_comparisons": null
+  },
+  "figures": {
+    "numbering": null,
+    "legend_must_state": [],
+    "panel_labels": {"case": null, "position": null},
+    "font": {"family": [], "min_pt": null},
+    "max_width_mm": null,
+    "max_width_assumed": false,
+    "files": {}
+  },
+  "tables": {
+    "separate_editable_files": null,
+    "title": null,
+    "internal_rules": null,
+    "shading": null,
+    "abbreviations_in_footnotes": null
+  },
+  "supplementary": {
+    "cite_as": [],
+    "number_prefix": null,
+    "upload_as": null
+  },
+  "revision": {
+    "markup": null,
+    "response_letter": null,
+    "track_changes_accepted": null
+  },
+  "policies": {},
+  "lint": {
+    "universal_abbreviations": [],
+    "disabled_rules": []
+  }
+}

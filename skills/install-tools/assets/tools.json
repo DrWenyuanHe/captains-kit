@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "sets": {
+    "imaging": {
+      "description": "Read, edit and measure raster images: figure checks, screenshots, crops and pixel statistics.",
+      "packages": [
+        {
+          "name": "Pillow",
+          "requirement": "Pillow>=10",
+          "import": "PIL",
+          "smoke": "import io\nfrom PIL import Image\nImage.new('RGB', (4, 4)).save(io.BytesIO(), 'PNG')"
+        },
+        {
+          "name": "opencv-python",
+          "requirement": "opencv-python>=4.8",
+          "import": "cv2",
+          "alternatives": [
+            "opencv-python-headless",
+            "opencv-contrib-python",
+            "opencv-contrib-python-headless"
+          ],
+          "smoke": "import numpy\nok, data = module.imencode('.png', numpy.zeros((4, 4, 3), numpy.uint8))\nassert ok and module.imdecode(data, 1).shape == (4, 4, 3)"
+        },
+        {
+          "name": "numpy",
+          "requirement": "numpy>=1.26",
+          "import": "numpy",
+          "smoke": "assert int(module.arange(4).sum()) == 6"
+        }
+      ]
+    }
+  }
+}

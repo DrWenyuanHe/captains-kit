@@ -1,0 +1,49 @@
+# {figure_id}: {figure_title}
+
+<!-- msw:figure:start -->
+{figure_block}
+<!-- msw:figure:end -->
+
+The block above is generated from `02_Figures/FIGURE_INDEX.json` by `msw.py figure`: the current
+(promoted) version, its files with their SHA-256 values, and every registered version. Write notes
+outside the markers; they are kept.
+
+## Where things live
+
+| What | Where |
+| --- | --- |
+| Build scripts | this folder, one per version, named for the change (`build_<figure>_vNN_<change>.py`); a script is never edited after it has produced outputs |
+| Outputs | `out/vNN/` in this folder: SVG, PDF, TIFF and PNG from the same build, plus the numbers-drawn CSVs |
+| Embed PNG | the 300 dpi PNG placed in the manuscript, rendered by the same build |
+| Source data | `source_data/`, frozen inputs; its `README.md` gives each file's origin |
+| Contract | `FIGURE_CONTRACT.md`, drawn up with the nature-figure skill |
+| Legend | the text lives in the manuscript's Figure Legends section; `LEGEND.md` here holds the current and proposed legend, the edit table and the numbers check |
+| QA runs | `90_Agent_Work/Figure_QA/<date>_{figure_id}_vNN/`, one new folder per run |
+
+## How to rebuild
+
+Run the current version's script from the project folder with the pinned plotting runtime
+(`02_Figures/Shared/figure_runtime.txt`), for example:
+
+```text
+python "{figure_folder}/build_<figure>_vNN_<change>.py"
+```
+
+A change is a new version: copy the script under a new name, write to a new `out/vNN/` folder,
+and let the script refuse to overwrite. Then register the new files where the build wrote them,
+and promote the version when the manuscript pass that shows it is ready (`msw.py` is the
+scientific-manuscript skill's `scripts/msw.py`; the project's AGENTS.md says where it was at
+setup):
+
+```text
+msw.py figure register --id {figure_id} --version vNN --file <pdf> --file <png> --script <script> --qa <qa folder> --embed <embed png> --note "what changed"
+msw.py figure promote --id {figure_id} --version vNN
+```
+
+Release that pass with `--figures {figure_id}=vNN`: the PDF and PNG are copied into the package
+and the copies they replace are archived.
+
+## Version notes
+
+Add one section per version, newest first: a heading such as `### vNN (date)`, then what changed
+from the previous version and why, the author's approval, the QA folder and the gate result.

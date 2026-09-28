@@ -1,0 +1,24 @@
+{
+  "title": "Serum marker L-38 and falls in older adults randomized to balance training",
+  "running_title": "L-38 and falls after balance training",
+  "authors": [
+    {"name": "Avery A. Author", "affiliations": [1, 3], "corresponding": false},
+    {"name": "Blake B. Writer", "affiliations": [1, 2], "corresponding": true},
+    {"name": "Casey C. Scholar", "affiliations": [2], "corresponding": false}
+  ],
+  "affiliations": [
+    "Department of Example Geriatrics<sup>1</sup> and Example Falls Clinic<sup>3</sup>, Example University Hospital, Example City, Example Country",
+    "Institute of Example Exercise Science<sup>2</sup>, Example University, Example City, Example Country"
+  ],
+  "corresponding": [
+    {
+      "name": "Blake B. Writer",
+      "address": "Institute of Example Exercise Science, Example University, 1 Example Street, Example City, Example Country",
+      "email": "writer@example.org",
+      "phone": "",
+      "orcid": "0000-0000-0000-0000"
+    }
+  ],
+  "keywords": ["marker L-38", "balance training", "falls", "older adults", "gait speed"],
+  "word_count": "auto"
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Install Tools"
+  short_description: "Check, install and update global Python tools for agents"
+  default_prompt: "Use $install-tools to check that Pillow, OpenCV and NumPy are available to agents, and install or update them globally if needed."

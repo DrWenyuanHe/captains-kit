@@ -19,6 +19,7 @@ configuration, setup scripts and project-specific decisions.
 | [humanizer](skills/humanizer/SKILL.md) | Rewrite AI-sounding prose while preserving the writer's voice and facts. | Automatic selection allowed, or explicit invocation. | [Usage and version history](skills/humanizer/README.md) |
 | [humanizer-zh](skills/humanizer-zh/SKILL.md) | Edit Chinese prose using the Chinese adaptation of Humanizer. | Automatic selection allowed, or explicit invocation. | [Usage and examples](skills/humanizer-zh/README.md) |
 | [nature-figure](skills/nature-figure/SKILL.md) | Create, revise and audit scientific figures in Python or R, with an optional AI schematic workflow. | Automatic selection allowed; AI generation requires an explicit request. | [Usage and examples](skills/nature-figure/README_EN.md) |
+| [scientific-manuscript](skills/scientific-manuscript/SKILL.md) | Create, revise and release Word manuscripts and theses: project bootstrap, house-style drafting, gated tracked-change versions, EndNote and reference audits, journal adaptation. | Automatic selection allowed; edits only through gated tracked-change builds. | [Usage guide](skills/scientific-manuscript/README.md) |
 | [review-changes](skills/review-changes/SKILL.md) | Find behavioral defects and missing checks in a branch, PR or working-tree change. | Automatic selection allowed; report only unless fixes are requested. | [Checklist](skills/review-changes/references/risk-checklist.md), [sources](skills/review-changes/references/source-notes.md) |
 | [ship-changes](skills/ship-changes/SKILL.md) | Verify a scoped change and prepare or publish its PR using the project's conventions. | Automatic selection allowed; publication follows the user's requested scope. | [Verification](skills/ship-changes/references/verification.md), [sources](skills/ship-changes/references/source-notes.md) |
 | [docs-sync](skills/docs-sync/SKILL.md) | Audit or update documentation to match a branch, PR or release change. | Automatic selection allowed; audit is read-only, update makes local documentation edits. | [Checklist](skills/docs-sync/references/documentation-checklist.md), [sources](skills/docs-sync/references/source-notes.md) |
@@ -27,6 +28,7 @@ configuration, setup scripts and project-specific decisions.
 | [grilling](skills/grilling/SKILL.md) | Stress-test a plan or decision through rounds of numbered questions with recommended answers. | Automatic selection allowed, or explicit invocation. | [Upstream source](https://github.com/mattpocock/skills/tree/main/skills/productivity/grilling) |
 | [domain-modeling](skills/domain-modeling/SKILL.md) | Build and sharpen a project's glossary in `CONTEXT.md` and record ADRs. | Automatic selection allowed, or explicit invocation. | [Upstream source](https://github.com/mattpocock/skills/tree/main/skills/engineering/domain-modeling) |
 | [install-skills](skills/install-skills/SKILL.md) | Install or update skills for Codex and Claude Code with staged comparisons, provenance, backups and verification. | Automatic selection allowed; follows the requested installation scope. | [Host guidance](skills/install-skills/references/hosts.md), [receipts and recovery](skills/install-skills/references/receipts-and-recovery.md) |
+| [install-tools](skills/install-tools/SKILL.md) | Check, install, update or roll back the Python packages agents import (Pillow, OpenCV and NumPy by default) at global scope, verifying that installed packages that use them still import. | Automatic selection allowed; changes only the requested packages and interpreter. | [Scope and recovery](skills/install-tools/references/scope-and-recovery.md), [tool manifest](skills/install-tools/assets/tools.json) |
 
 `unslop` is a customized import. Use `$unslop` in Codex, `/unslop` in Claude Code,
 or explicitly ask to "use unslop" after installing it. Ordinary writing requests
@@ -76,9 +78,44 @@ both clients. Use `/install-skills` in Claude Code. This workflow stages and com
 copies, preserves invocation policies, and keeps receipts and backups privately
 with the destination. The repository installer below remains project-local.
 
+`install-tools` manages shared Python packages rather than skill files. Its
+[manifest](skills/install-tools/assets/tools.json) lists each package, the module
+agents import and a smoke test. From the skill folder:
+
+- `python scripts/tools.py status` checks imports, scope and conflicts read-only.
+- `python scripts/tools.py update --dry-run` previews the newest compatible versions
+  within each current major version, including limits that installed packages such
+  as numba place on NumPy. `--with numba` moves such a package too; `--allow-major`
+  permits a confirmed major upgrade.
+- `python scripts/tools.py install` or `update` applies the plan outside any virtual
+  environment and records it under `~/.agent-tools/records/`. It rolls back if
+  `pip check` reports a new conflict or an installed package that uses a changed one
+  stops importing. `rollback <record folder>` undoes it later.
+
+Use `$install-tools` in Codex or `/install-tools` in Claude Code. Install the skill
+itself for each client with `install-skills`, as with other library skills.
+
 The [upstream source index](docs/upstream-sources.md) links the reviewed gstack
 snapshot, current sources and changelog for occasional revisits. Each adapted
 skill keeps its source-review history alongside its attribution.
+
+## Scientific kit
+
+`scientific-manuscript` and `nature-figure` together cover manuscript work from a new
+project to a submission package. `scientific-manuscript` is locally authored from the
+author's own thesis and journal-manuscript projects. It bootstraps the project folder,
+drafts in the author's house style, and makes every change as a minimal Word tracked change.
+Each new version passes a verification gate before it is shown to anyone. The skill also
+handles EndNote citations, reference audits and journal adaptation. Figures are delegated to
+`nature-figure`. Its `scripts/msw.py` tools need only Python 3.10 or newer. LibreOffice and
+Word are optional, for proofs and native checks.
+
+Install both with `--skill scientific-manuscript` and `--skill nature-figure`; add
+`--skill humanizer` for the prose passes, which otherwise fall back to the skill's own rule
+table. Then ask, for
+example, `$scientific-manuscript bootstrap a manuscript project here for the Journal of
+Endocrinology` or `/scientific-manuscript make the next tracked version from my latest save with
+these edits`. See the [usage guide](skills/scientific-manuscript/README.md).
 
 ## Installation
 
@@ -197,6 +234,7 @@ invocation behavior, testing changes and updating installed copies.
 - [scripts/skills.py](scripts/skills.py) and [skills-registry.json](skills-registry.json): imports, source versions, checks, updates and timestamp history.
 - [scripts/check.py](scripts/check.py): validate the library or a selected skill.
 - [tests/test_tracking.py](tests/test_tracking.py), [tests/test_install.py](tests/test_install.py) and [tests/test_check.py](tests/test_check.py): tracking, installation and validation behavior, also run by [CI](.github/workflows/check.yml).
+- [tests/msw_fixtures.py](tests/msw_fixtures.py) and the `tests/test_msw_*.py` files: synthetic Word documents and tests for the scientific-manuscript tools (engine, gate, project lifecycle, drafting, lint, references, proofs).
 
 Original kit content is [MIT licensed](LICENSE). Linked sources retain their
 publishers' rights; attribution and source summaries live with the relevant skill.
