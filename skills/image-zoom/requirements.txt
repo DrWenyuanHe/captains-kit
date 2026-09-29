@@ -1,0 +1,4 @@
+# Required
+pillow>=10
+# PDF input (--page/--dpi on .pdf files)
+pymupdf>=1.24

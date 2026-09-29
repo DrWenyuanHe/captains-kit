@@ -253,6 +253,24 @@
         "sha256": "17b01dd125f9620409ab13a6d521322893333b5b28a469a662b3879c77f8a639"
       }
     },
+    "image-zoom": {
+      "added_at": "2026-09-29T16:48:30.851352Z",
+      "content_sha256": "a4af3b584ea579caeca829a786a823cb50c41da995d8161298f1142e67764640",
+      "first_imported_at": null,
+      "history": [
+        {
+          "at": "2026-09-29T16:48:30.851352Z",
+          "content_sha256": "a4af3b584ea579caeca829a786a823cb50c41da995d8161298f1142e67764640",
+          "event": "registered"
+        }
+      ],
+      "last_check": null,
+      "last_check_attempt_at": null,
+      "last_checked_at": null,
+      "last_updated_at": null,
+      "origin": "local",
+      "source": null
+    },
     "improve-codebase-architecture": {
       "added_at": "2026-09-24T18:58:42.546331Z",
       "content_sha256": "da068be4e7de2928ed396f2a93a92b412d2b109b9db2c3ab96a6c1f0e4a1c0cf",

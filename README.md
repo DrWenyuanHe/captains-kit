@@ -20,6 +20,7 @@ configuration, setup scripts and project-specific decisions.
 | [humanizer-zh](skills/humanizer-zh/SKILL.md) | Edit Chinese prose using the Chinese adaptation of Humanizer. | Automatic selection allowed, or explicit invocation. | [Usage and examples](skills/humanizer-zh/README.md) |
 | [nature-figure](skills/nature-figure/SKILL.md) | Create, revise and audit scientific figures in Python or R, with an optional AI schematic workflow. | Automatic selection allowed; AI generation requires an explicit request. | [Usage and examples](skills/nature-figure/README_EN.md) |
 | [scientific-manuscript](skills/scientific-manuscript/SKILL.md) | Create, revise and release Word manuscripts and theses: project bootstrap, house-style drafting, gated tracked-change versions, EndNote and reference audits, journal adaptation. | Automatic selection allowed; edits only through gated tracked-change builds. | [Usage guide](skills/scientific-manuscript/README.md) |
+| [image-zoom](skills/image-zoom/SKILL.md) | Inspect figures, screenshots and PDF pages at full resolution: coordinate grid, crop-and-zoom, tiles and a region-level diff between figure versions. | Automatic selection allowed. | [Requirements and install commands](skills/image-zoom/README.md) |
 | [review-changes](skills/review-changes/SKILL.md) | Find behavioral defects and missing checks in a branch, PR or working-tree change. | Automatic selection allowed; report only unless fixes are requested. | [Checklist](skills/review-changes/references/risk-checklist.md), [sources](skills/review-changes/references/source-notes.md) |
 | [ship-changes](skills/ship-changes/SKILL.md) | Verify a scoped change and prepare or publish its PR using the project's conventions. | Automatic selection allowed; publication follows the user's requested scope. | [Verification](skills/ship-changes/references/verification.md), [sources](skills/ship-changes/references/source-notes.md) |
 | [docs-sync](skills/docs-sync/SKILL.md) | Audit or update documentation to match a branch, PR or release change. | Automatic selection allowed; audit is read-only, update makes local documentation edits. | [Checklist](skills/docs-sync/references/documentation-checklist.md), [sources](skills/docs-sync/references/source-notes.md) |
@@ -116,6 +117,20 @@ table. Then ask, for
 example, `$scientific-manuscript bootstrap a manuscript project here for the Journal of
 Endocrinology` or `/scientific-manuscript make the next tracked version from my latest save with
 these edits`. See the [usage guide](skills/scientific-manuscript/README.md).
+
+## Runtime requirements
+
+Installing a skill only copies files. Some skills also need tools on the machine
+where the agent runs:
+
+| Skill | Needs | Install |
+| --- | --- | --- |
+| agentic-environment-setup, unslop, humanizer, humanizer-zh, install-skills, improve-codebase-architecture, codebase-design, grilling, domain-modeling | Nothing beyond the agent (Git for repository work). | |
+| review-changes, ship-changes, docs-sync | Git; the target project's own test and build tools. Publishing a PR uses the project's usual GitHub route (for example the `gh` CLI). | |
+| install-tools | Python 3.10+ with pip, outside a virtual environment. | Its [manifest](skills/install-tools/assets/tools.json) lists the packages it manages. |
+| scientific-manuscript | Python 3.10+. **Optional:** LibreOffice for rendered proofs, Microsoft Word (Windows) for native checks. | [Usage guide](skills/scientific-manuscript/README.md); `python skills/image-zoom/scripts/imgzoom.py doctor` also reports LibreOffice with its install command. |
+| nature-figure | Python with matplotlib and NumPy, or R with ggplot2 and patchwork; PyMuPDF for the automatic collision audit. | [Usage guide](skills/nature-figure/README_EN.md), `python -m pip install -r skills/nature-figure/requirements.txt` |
+| image-zoom | **Required:** Python 3.10+ and Pillow. PDF input: PyMuPDF. **Optional companions:** ImageMagick, Poppler, Tesseract OCR, LibreOffice, pandoc. | `python skills/image-zoom/scripts/imgzoom.py doctor` reports what is present and prints the install command for anything missing; [the table](skills/image-zoom/README.md#requirements) lists winget, Homebrew and apt commands. `install-tools` can manage Pillow globally. |
 
 ## Installation
 
